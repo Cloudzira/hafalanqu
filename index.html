@@ -116,6 +116,40 @@
       cursor: pointer;
     }
 
+    /* Grid Peringkat & Capaian */
+    .top-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .top-info-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Style Kartu Medali / Peringkat */
+    .rank-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .rank-icon {
+      font-size: 2.2rem;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
     /* Target & Progress Grid */
     .target-grid {
       display: grid;
@@ -249,10 +283,23 @@
       <button class="btn-logout" onclick="logout()">Keluar</button>
     </div>
 
-    <!-- CAPAIAN TERAKHIR -->
-    <div style="background: rgba(255,255,255,0.04); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-      <span style="font-size: 0.75rem; color: #9ca3af;">📖 CAPAIAN TERAKHIR</span>
-      <p id="dispCapaian" style="font-size: 1.1rem; font-weight: 600; margin-top: 5px;">-</p>
+    <!-- GRID TOP INFO: CAPAIAN & MEDALI PERINGKAT -->
+    <div class="top-info-grid">
+      <!-- CAPAIAN TERAKHIR -->
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 12px;">
+        <span style="font-size: 0.75rem; color: #9ca3af;">📖 CAPAIAN TERAKHIR</span>
+        <p id="dispCapaian" style="font-size: 1.1rem; font-weight: 600; margin-top: 5px;">-</p>
+      </div>
+
+      <!-- KARTU MEDALI PERINGKAT -->
+      <div class="rank-card">
+        <div id="dispRankIcon" class="rank-icon">🏅</div>
+        <div>
+          <span style="font-size: 0.75rem; color: #9ca3af;">🏆 PERINGKAT HAFALAN</span>
+          <p id="dispRankText" style="font-size: 1.1rem; font-weight: 700; color: #fbbf24; margin-top: 2px;">Juara -</p>
+          <span id="dispRankSub" style="font-size: 0.75rem; color: #9ca3af;">Dari - siswa</span>
+        </div>
+      </div>
     </div>
 
     <!-- GRID TARGET PTS & PAS -->
@@ -284,13 +331,13 @@
       </div>
     </div>
 
-  <!-- KARTU MOTIVASI GURU (PERMANEN) -->
-<div style="background: rgba(168, 85, 247, 0.1); border: 1px dashed rgba(168, 85, 247, 0.4); padding: 15px; border-radius: 12px; margin-top: 20px;">
-  <span style="font-size: 0.8rem; color: #c084fc; font-weight: 600;">💬 PESAN & MOTIVASI GURU:</span>
-  <p style="font-style: italic; margin-top: 8px; color: #e2e8f0;">
-    "Semangat terus menghafalnya! Tetap istiqomah dan jangan lupa muroja'ah juga setiap hari"
-  </p>
-</div>
+    <!-- KARTU MOTIVASI GURU (PERMANEN) -->
+    <div style="background: rgba(168, 85, 247, 0.1); border: 1px dashed rgba(168, 85, 247, 0.4); padding: 15px; border-radius: 12px; margin-top: 10px;">
+      <span style="font-size: 0.8rem; color: #c084fc; font-weight: 600;">💬 PESAN & MOTIVASI GURU:</span>
+      <p style="font-style: italic; margin-top: 8px; color: #e2e8f0;">
+        "Pertahankan semangat hafalannya! Tetap istiqomah dan jangan lupa muroja'ah setiap hari."
+      </p>
+    </div>
   </div>
 
   <!-- DASHBOARD GURU -->
@@ -321,11 +368,6 @@
             <input type="text" id="editHalaman">
           </div>
 
-          <div class="form-group">
-            <label>Pesan Motivasi Guru</label>
-            <textarea id="editMotivasi" rows="3"></textarea>
-          </div>
-
           <button type="submit" class="btn" id="saveBtn">Simpan Perubahan</button>
           <div id="updateStatus" style="font-size: 0.85rem; text-align: center; margin-top: 10px;"></div>
         </form>
@@ -334,8 +376,7 @@
   </div>
 
   <script>
-    // PASTEKAN URL WEB APP APPS SCRIPT ANDA DI SINI
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyJAocuJLyfCpNTC8ftKNQpFsK6gqgRDKKeNj-_Q_4xgH5krFBx1XptG1yAwDMqBjV/exec"; 
+    const SCRIPT_URL = "GANTI_DENGAN_URL_WEB_APP_APPS_SCRIPT_ANDA"; 
 
     let currentAdminPin = "";
     let studentDataList = [];
@@ -439,6 +480,33 @@
       const capaianHlm = parseHalaman(data.CAPAIAN_HALAMAN);
       document.getElementById('dispCapaian').innerText = `${capaianSurah} (${capaianHlm} Halaman)`;
 
+      // Medali & Peringkat
+      const rank = data.RANK || 0;
+      const total = data.TOTAL_SISWA || 0;
+      const rankIcon = document.getElementById('dispRankIcon');
+      const rankText = document.getElementById('dispRankText');
+      const rankSub = document.getElementById('dispRankSub');
+
+      rankSub.innerText = `Dari ${total} siswa`;
+
+      if (rank === 1) {
+        rankIcon.innerText = "🥇";
+        rankText.innerText = "Juara 1";
+        rankText.style.color = "#fbbf24"; // Emas
+      } else if (rank === 2) {
+        rankIcon.innerText = "🥈";
+        rankText.innerText = "Juara 2";
+        rankText.style.color = "#9ca3af"; // Perak
+      } else if (rank === 3) {
+        rankIcon.innerText = "🥉";
+        rankText.innerText = "Juara 3";
+        rankText.style.color = "#d97706"; // Perunggu
+      } else {
+        rankIcon.innerText = "🎖️";
+        rankText.innerText = `Peringkat ${rank}`;
+        rankText.style.color = "#38bdf8"; // Biru Muda
+      }
+
       // Target PTS
       const targetPtsSurah = data.PTS_SURAT || "-";
       const targetPtsHlm = parseHalaman(data.PTS_HALAMAN);
@@ -450,7 +518,7 @@
       const targetPasHlm = parseHalaman(data.PAS_HALAMAN);
       document.getElementById('dispTargetPAS').innerText = `${targetPasSurah} (${targetPasHlm} Halaman)`;
       updateProgress('badgePAS', 'barPAS', 'percentPAS', capaianHlm, targetPasHlm);
-  }
+    }
 
     async function showAdminDashboard() {
       document.getElementById('loginCard').style.display = 'none';
@@ -488,7 +556,6 @@
       document.getElementById('editRowIndex').value = s.ROW_INDEX;
       document.getElementById('editSurah').value = s.CAPAIAN_SURAT || "";
       document.getElementById('editHalaman').value = s.CAPAIAN_HALAMAN || "";
-      document.getElementById('editMotivasi').value = s.MOTIVASI_GURU || "";
       document.getElementById('updateForm').style.display = 'block';
     }
 
@@ -506,8 +573,7 @@
         pin: currentAdminPin,
         rowIndex: document.getElementById('editRowIndex').value,
         capaianSurah: document.getElementById('editSurah').value,
-        capaianHalaman: document.getElementById('editHalaman').value,
-        motivasiGuru: document.getElementById('editMotivasi').value
+        capaianHalaman: document.getElementById('editHalaman').value
       };
 
       try {
