@@ -335,31 +335,37 @@
       }
     });
 
-    function renderDashboard(data) {
-      loginCard.style.display = 'none';
-      dashboardCard.style.display = 'block';
+   function renderDashboard(data) {
+  loginCard.style.display = 'none';
+  dashboardCard.style.display = 'block';
 
-      // Meta Data Siswa
-      document.getElementById('studentName').innerText = data["Nama"] || "Siswa";
-      document.getElementById('studentMeta').innerText = `NISN: ${data["NISN"] || '-'} | Kelas: ${data["Kelas"] || '-'}`;
+  // Format angka koma dari Sheet (misal 11,5 menjadi 11.5)
+  function parseHalaman(val) {
+    if (!val) return 0;
+    return parseFloat(String(val).replace(',', '.')) || 0;
+  }
 
-      // Data Hafalan
-      const capaianSurah = data["Capaian Terakhir (Surat)"] || "-";
-      const capaianHlm = parseFloat(data["Capaian Terakhir (Jumlah Halaman)"] || 0);
-      document.getElementById('dispCapaian').innerText = `${capaianSurah} (${capaianHlm} Halaman)`;
+  // Meta Data Siswa
+  document.getElementById('studentName').innerText = data.NAMA || "Siswa";
+  document.getElementById('studentMeta').innerText = `NISN: ${data.NISN || '-'} | Kelas: ${data.KELAS || '-'}`;
 
-      // Target PTS
-      const targetPtsSurah = data["Target Tengah Semester (Surat)"] || "-";
-      const targetPtsHlm = parseFloat(data["Target Tengah Semester (Jumlah Halaman)"] || 0);
-      document.getElementById('dispTargetPTS').innerText = `${targetPtsSurah} (${targetPtsHlm} Halaman)`;
-      updateTargetStatus('badgePTS', 'barPTS', 'percentPTS', capaianHlm, targetPtsHlm);
+  // Data Capaian Terakhir
+  const capaianSurah = data.CAPAIAN_SURAT || "-";
+  const capaianHlm = parseHalaman(data.CAPAIAN_HALAMAN);
+  document.getElementById('dispCapaian').innerText = `${capaianSurah} (${capaianHlm} Halaman)`;
 
-      // Target PAS
-      const targetPasSurah = data["Target Akhir Semester (Surat)"] || "-";
-      const targetPasHlm = parseFloat(data["Target Akhir Semester (Jumlah Halaman)"] || 0);
-      document.getElementById('dispTargetPAS').innerText = `${targetPasSurah} (${targetPasHlm} Halaman)`;
-      updateTargetStatus('badgePAS', 'barPAS', 'percentPAS', capaianHlm, targetPasHlm);
-    }
+  // Target Tengah Semester (PTS)
+  const targetPtsSurah = data.PTS_SURAT || "-";
+  const targetPtsHlm = parseHalaman(data.PTS_HALAMAN);
+  document.getElementById('dispTargetPTS').innerText = `${targetPtsSurah} (${targetPtsHlm} Halaman)`;
+  updateTargetStatus('badgePTS', 'barPTS', 'percentPTS', capaianHlm, targetPtsHlm);
+
+  // Target Akhir Semester (PAS)
+  const targetPasSurah = data.PAS_SURAT || "-";
+  const targetPasHlm = parseHalaman(data.PAS_HALAMAN);
+  document.getElementById('dispTargetPAS').innerText = `${targetPasSurah} (${targetPasHlm} Halaman)`;
+  updateTargetStatus('badgePAS', 'barPAS', 'percentPAS', capaianHlm, targetPasHlm);
+}
 
     function updateTargetStatus(badgeId, barId, percentId, capaian, target) {
       const badge = document.getElementById(badgeId);
