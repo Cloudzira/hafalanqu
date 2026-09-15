@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Hafalan & Panel Guru</title>
+  <title>Portal Hafalan & Panel Notifikasi Guru</title>
   <style>
     * {
       margin: 0;
@@ -189,10 +189,12 @@
       border-radius: 8px;
       margin-bottom: 8px;
       cursor: pointer;
+      transition: background 0.2s;
     }
 
-    .student-item:hover {
-      background: rgba(168, 85, 247, 0.2);
+    .student-item:hover, .student-item.selected {
+      background: rgba(168, 85, 247, 0.25);
+      border: 1px solid rgba(168, 85, 247, 0.4);
     }
 
     .edit-box {
@@ -200,6 +202,16 @@
       padding: 20px;
       border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Notifikasi Box Siswa */
+    .notif-box {
+      background: rgba(52, 211, 153, 0.08);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      border-left: 4px solid #34d399;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
     }
   </style>
 </head>
@@ -249,6 +261,15 @@
       <button class="btn-logout" onclick="logout()">Keluar</button>
     </div>
 
+    <!-- BOX NOTIFIKASI DARI GURU -->
+    <div id="notifCard" class="notif-box" style="display: none;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+        <span style="font-size: 1.1rem;">🔔</span>
+        <span style="font-size: 0.85rem; color: #34d399; font-weight: 700;">NOTIFIKASI DARI GURU</span>
+      </div>
+      <p id="dispNotifikasi" style="font-size: 0.95rem; color: #f3f4f6; line-height: 1.4;">-</p>
+    </div>
+
     <!-- CAPAIAN TERAKHIR -->
     <div style="background: rgba(255,255,255,0.04); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
       <span style="font-size: 0.75rem; color: #9ca3af;">📖 CAPAIAN TERAKHIR</span>
@@ -283,24 +304,12 @@
         </div>
       </div>
     </div>
-
-    <!-- KARTU CATATAN GURU -->
-    <div style="background: rgba(59, 130, 246, 0.1); border: 1px dashed rgba(59, 130, 246, 0.4); padding: 15px; border-radius: 12px; margin-bottom: 15px; display: none;" id="catatanCard">
-      <span style="font-size: 0.8rem; color: #60a5fa; font-weight: 600;">📝 CATATAN GURU:</span>
-      <p id="dispCatatan" style="margin-top: 8px; color: #e2e8f0;">"-"</p>
-    </div>
-
-    <!-- KARTU MOTIVASI GURU -->
-    <div style="background: rgba(168, 85, 247, 0.1); border: 1px dashed rgba(168, 85, 247, 0.4); padding: 15px; border-radius: 12px; display: none;" id="motivCard">
-      <span style="font-size: 0.8rem; color: #c084fc; font-weight: 600;">💬 PESAN & MOTIVASI GURU:</span>
-      <p id="dispMotivasi" style="font-style: italic; margin-top: 8px; color: #e2e8f0;">"-"</p>
-    </div>
   </div>
 
   <!-- DASHBOARD GURU -->
   <div id="adminDashboard" class="glass-card wide" style="display: none;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h2>Panel Kelola Hafalan Siswa</h2>
+      <h2>Panel Kirim Notifikasi Siswa</h2>
       <button class="btn-logout" onclick="logout()">Keluar</button>
     </div>
 
@@ -311,31 +320,16 @@
       </div>
 
       <div class="edit-box">
-        <h3 id="selectedStudentTitle" style="font-size: 1rem; margin-bottom: 15px; color: #34d399;">Klik nama siswa di kiri</h3>
+        <h3 id="selectedStudentTitle" style="font-size: 1rem; margin-bottom: 15px; color: #34d399;">← Pilih siswa di samping</h3>
         <form id="updateForm" style="display: none;">
           <input type="hidden" id="editRowIndex">
           
           <div class="form-group">
-            <label>Capaian Surah</label>
-            <input type="text" id="editSurah">
+            <label>Pesan Notifikasi untuk Siswa</label>
+            <textarea id="editNotifikasi" rows="5" placeholder="Tulis pesan, evaluasi hafalan, atau pengumuman khusus siswa ini di sini..." required></textarea>
           </div>
 
-          <div class="form-group">
-            <label>Capaian Halaman</label>
-            <input type="text" id="editHalaman">
-          </div>
-
-          <div class="form-group">
-            <label>Catatan Guru</label>
-            <textarea id="editCatatan" rows="3" placeholder="Masukkan catatan evaluasi atau instruksi..."></textarea>
-          </div>
-
-          <div class="form-group">
-            <label>Pesan Motivasi Guru</label>
-            <textarea id="editMotivasi" rows="3" placeholder="Masukkan kata-kata motivasi..."></textarea>
-          </div>
-
-          <button type="submit" class="btn" id="saveBtn">Simpan Perubahan</button>
+          <button type="submit" class="btn" id="saveBtn">Kirim Notifikasi</button>
           <div id="updateStatus" style="font-size: 0.85rem; text-align: center; margin-top: 10px;"></div>
         </form>
       </div>
@@ -377,7 +371,7 @@
         if (result.status === 'success') {
           showStudentDashboard(result.data);
         } else {
-          document.getElementById('loginError').innerText = result.message;
+          document.getElementById('loginError').innerText = result.message || "NISN atau Password salah.";
         }
       } catch (err) {
         document.getElementById('loginError').innerText = "Gagal terhubung ke server.";
@@ -397,7 +391,7 @@
           currentAdminPin = pin;
           showAdminDashboard();
         } else {
-          document.getElementById('loginError').innerText = result.message;
+          document.getElementById('loginError').innerText = result.message || "PIN Guru salah.";
         }
       } catch (err) {
         document.getElementById('loginError').innerText = "Gagal terhubung ke server.";
@@ -443,6 +437,16 @@
       document.getElementById('dispName').innerText = data.NAMA || "Siswa";
       document.getElementById('dispMeta').innerText = `NISN: ${data.NISN || '-'} | Kelas: ${data.KELAS || '-'}`;
 
+      // Tampilkan Notifikasi dari Guru jika ada
+      const notifCard = document.getElementById('notifCard');
+      const pesanNotif = data.NOTIFIKASI || data.PESAN_GURU || data.MOTIVASI_GURU;
+      if (pesanNotif && pesanNotif.trim() !== "") {
+        document.getElementById('dispNotifikasi').innerText = pesanNotif.trim();
+        notifCard.style.display = 'block';
+      } else {
+        notifCard.style.display = 'none';
+      }
+
       // Capaian Terakhir
       const capaianSurah = data.CAPAIAN_SURAT || "-";
       const capaianHlm = parseHalaman(data.CAPAIAN_HALAMAN);
@@ -459,24 +463,6 @@
       const targetPasHlm = parseHalaman(data.PAS_HALAMAN);
       document.getElementById('dispTargetPAS').innerText = `${targetPasSurah} (${targetPasHlm} Halaman)`;
       updateProgress('badgePAS', 'barPAS', 'percentPAS', capaianHlm, targetPasHlm);
-
-      // Catatan Guru
-      const catatanCard = document.getElementById('catatanCard');
-      if (data.CATATAN_GURU && data.CATATAN_GURU.trim() !== "") {
-        document.getElementById('dispCatatan').innerText = data.CATATAN_GURU.trim();
-        catatanCard.style.display = 'block';
-      } else {
-        catatanCard.style.display = 'none';
-      }
-
-      // Motivasi Guru
-      const motivCard = document.getElementById('motivCard');
-      if (data.MOTIVASI_GURU && data.MOTIVASI_GURU.trim() !== "") {
-        document.getElementById('dispMotivasi').innerText = `"${data.MOTIVASI_GURU.trim()}"`;
-        motivCard.style.display = 'block';
-      } else {
-        motivCard.style.display = 'none';
-      }
     }
 
     async function showAdminDashboard() {
@@ -490,9 +476,11 @@
         if (result.status === 'success') {
           studentDataList = result.data;
           renderStudentList();
+        } else {
+          alert("Gagal memuat data siswa: " + result.message);
         }
       } catch (err) {
-        alert("Gagal memuat daftar siswa.");
+        alert("Gagal memuat daftar siswa. Periksa jaringan Anda.");
       }
     }
 
@@ -500,43 +488,47 @@
       const listContainer = document.getElementById('studentList');
       listContainer.innerHTML = "";
 
+      if (!studentDataList || studentDataList.length === 0) {
+        listContainer.innerHTML = "<p style='color:#9ca3af; font-size:0.85rem; text-align:center;'>Tidak ada data siswa.</p>";
+        return;
+      }
+
       studentDataList.forEach((s, idx) => {
         const item = document.createElement('div');
         item.className = "student-item";
-        item.innerHTML = `<strong>${s.NAMA}</strong><br><small style="color:#9ca3af;">${s.KELAS} | NISN: ${s.NISN}</small>`;
+        item.id = `student-item-${idx}`;
+        item.innerHTML = `<strong>${s.NAMA}</strong><br><small style="color:#9ca3af;">${s.KELAS || ''} | NISN: ${s.NISN}</small>`;
         item.onclick = () => selectStudentForEdit(idx);
         listContainer.appendChild(item);
       });
     }
 
     function selectStudentForEdit(index) {
+      document.querySelectorAll('.student-item').forEach(el => el.classList.remove('selected'));
+      document.getElementById(`student-item-${index}`).classList.add('selected');
+
       const s = studentDataList[index];
-      document.getElementById('selectedStudentTitle').innerText = `Edit: ${s.NAMA}`;
+      document.getElementById('selectedStudentTitle').innerText = `Kirim Notifikasi ke: ${s.NAMA}`;
       document.getElementById('editRowIndex').value = s.ROW_INDEX;
-      document.getElementById('editSurah').value = s.CAPAIAN_SURAT || "";
-      document.getElementById('editHalaman').value = s.CAPAIAN_HALAMAN || "";
-      document.getElementById('editCatatan').value = s.CATATAN_GURU || "";
-      document.getElementById('editMotivasi').value = s.MOTIVASI_GURU || "";
+      document.getElementById('editNotifikasi').value = s.NOTIFIKASI || s.PESAN_GURU || s.MOTIVASI_GURU || "";
       document.getElementById('updateForm').style.display = 'block';
     }
 
-    // SIMPAN PERUBAHAN DARI PANEL GURU
+    // SIMPAN / KIRIM NOTIFIKASI
     document.getElementById('updateForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const saveBtn = document.getElementById('saveBtn');
       const updateStatus = document.getElementById('updateStatus');
 
       saveBtn.disabled = true;
-      saveBtn.innerText = "Menyimpan...";
+      saveBtn.innerText = "Mengirim...";
       updateStatus.innerText = "";
 
       const payload = {
+        action: "update_notif",
         pin: currentAdminPin,
         rowIndex: document.getElementById('editRowIndex').value,
-        capaianSurah: document.getElementById('editSurah').value,
-        capaianHalaman: document.getElementById('editHalaman').value,
-        catatanGuru: document.getElementById('editCatatan').value,
-        motivasiGuru: document.getElementById('editMotivasi').value
+        notifikasi: document.getElementById('editNotifikasi').value
       };
 
       try {
@@ -549,18 +541,24 @@
 
         if (result.status === 'success') {
           updateStatus.style.color = "#4ade80";
-          updateStatus.innerText = "✓ Berhasil disimpan!";
-          showAdminDashboard();
+          updateStatus.innerText = "✓ Notifikasi berhasil dikirim!";
+          
+          // Update data lokal
+          const rIndex = document.getElementById('editRowIndex').value;
+          const studentObj = studentDataList.find(s => s.ROW_INDEX == rIndex);
+          if (studentObj) {
+            studentObj.NOTIFIKASI = payload.notifikasi;
+          }
         } else {
           updateStatus.style.color = "#f87171";
-          updateStatus.innerText = result.message;
+          updateStatus.innerText = result.message || "Gagal mengirim notifikasi.";
         }
       } catch (err) {
         updateStatus.style.color = "#f87171";
-        updateStatus.innerText = "Gagal menyimpan data.";
+        updateStatus.innerText = "Gagal menyimpan data. Pastikan koneksi aman.";
       } finally {
         saveBtn.disabled = false;
-        saveBtn.innerText = "Simpan Perubahan";
+        saveBtn.innerText = "Kirim Notifikasi";
       }
     });
 
