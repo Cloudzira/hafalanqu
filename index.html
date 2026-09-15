@@ -116,6 +116,54 @@
       cursor: pointer;
     }
 
+    /* Target & Progress Grid */
+    .target-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .target-grid { grid-template-columns: 1fr; }
+    }
+
+    .target-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 15px;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #34d399, #a855f7);
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .badge-success { background: rgba(52, 211, 153, 0.2); color: #34d399; }
+    .badge-warning { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+
+    /* Layout Panel Guru */
     .admin-grid {
       display: grid;
       grid-template-columns: 1fr 1.2fr;
@@ -201,12 +249,43 @@
       <button class="btn-logout" onclick="logout()">Keluar</button>
     </div>
 
+    <!-- CAPAIAN TERAKHIR -->
     <div style="background: rgba(255,255,255,0.04); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
       <span style="font-size: 0.75rem; color: #9ca3af;">📖 CAPAIAN TERAKHIR</span>
       <p id="dispCapaian" style="font-size: 1.1rem; font-weight: 600; margin-top: 5px;">-</p>
     </div>
 
-    <div style="background: rgba(168, 85, 247, 0.1); border: 1px dashed rgba(168, 85, 247, 0.4); padding: 15px; border-radius: 12px;" id="motivCard">
+    <!-- GRID TARGET PTS & PAS -->
+    <div class="target-grid">
+      <!-- TARGET PTS -->
+      <div class="target-box">
+        <span style="font-size: 0.75rem; color: #9ca3af;">🎯 TARGET TENGAH SEMESTER (PTS)</span>
+        <p id="dispTargetPTS" style="font-size: 0.95rem; font-weight: 600; margin-top: 5px;">-</p>
+        <div class="progress-bar-bg">
+          <div id="barPTS" class="progress-bar-fill"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+          <span id="badgePTS" class="badge badge-warning">Belum Tuntas</span>
+          <span id="percentPTS" style="font-size: 0.75rem; color: #9ca3af;">0%</span>
+        </div>
+      </div>
+
+      <!-- TARGET PAS -->
+      <div class="target-box">
+        <span style="font-size: 0.75rem; color: #9ca3af;">🏁 TARGET AKHIR SEMESTER (PAS)</span>
+        <p id="dispTargetPAS" style="font-size: 0.95rem; font-weight: 600; margin-top: 5px;">-</p>
+        <div class="progress-bar-bg">
+          <div id="barPAS" class="progress-bar-fill"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+          <span id="badgePAS" class="badge badge-warning">Belum Tuntas</span>
+          <span id="percentPAS" style="font-size: 0.75rem; color: #9ca3af;">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KARTU MOTIVASI GURU -->
+    <div style="background: rgba(168, 85, 247, 0.1); border: 1px dashed rgba(168, 85, 247, 0.4); padding: 15px; border-radius: 12px; display: none;" id="motivCard">
       <span style="font-size: 0.8rem; color: #c084fc; font-weight: 600;">💬 PESAN & MOTIVASI GURU:</span>
       <p id="dispMotivasi" style="font-style: italic; margin-top: 8px; color: #e2e8f0;">"-"</p>
     </div>
@@ -253,7 +332,7 @@
   </div>
 
   <script>
-    // PASTEKAN URL WEB APP EXEC ANDA DI SINI!
+    // PASTEKAN URL WEB APP APPS SCRIPT ANDA DI SINI
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyJAocuJLyfCpNTC8ftKNQpFsK6gqgRDKKeNj-_Q_4xgH5krFBx1XptG1yAwDMqBjV/exec"; 
 
     let currentAdminPin = "";
@@ -314,19 +393,69 @@
       }
     });
 
+    function parseHalaman(val) {
+      if (!val) return 0;
+      return parseFloat(String(val).replace(',', '.')) || 0;
+    }
+
+    function updateProgress(badgeId, barId, percentId, currentVal, targetVal) {
+      const badge = document.getElementById(badgeId);
+      const bar = document.getElementById(barId);
+      const percent = document.getElementById(percentId);
+
+      if (!targetVal || targetVal <= 0) {
+        bar.style.width = '0%';
+        percent.innerText = '0%';
+        badge.innerText = 'Belum Tuntas';
+        badge.className = 'badge badge-warning';
+        return;
+      }
+
+      let percentage = Math.min(Math.round((currentVal / targetVal) * 100), 100);
+      bar.style.width = percentage + '%';
+      percent.innerText = percentage + '%';
+
+      if (currentVal >= targetVal) {
+        badge.innerText = 'Tuntas';
+        badge.className = 'badge badge-success';
+      } else {
+        badge.innerText = 'Belum Tuntas';
+        badge.className = 'badge badge-warning';
+      }
+    }
+
     function showStudentDashboard(data) {
       document.getElementById('loginCard').style.display = 'none';
       document.getElementById('studentDashboard').style.display = 'block';
 
-      document.getElementById('dispName').innerText = data.NAMA;
-      document.getElementById('dispMeta').innerText = `NISN: ${data.NISN} | Kelas: ${data.KELAS}`;
-      document.getElementById('dispCapaian').innerText = `${data.CAPAIAN_SURAT || '-'} (${data.CAPAIAN_HALAMAN || 0} Halaman)`;
+      // Meta Data
+      document.getElementById('dispName').innerText = data.NAMA || "Siswa";
+      document.getElementById('dispMeta').innerText = `NISN: ${data.NISN || '-'} | Kelas: ${data.KELAS || '-'}`;
 
+      // Capaian Terakhir
+      const capaianSurah = data.CAPAIAN_SURAT || "-";
+      const capaianHlm = parseHalaman(data.CAPAIAN_HALAMAN);
+      document.getElementById('dispCapaian').innerText = `${capaianSurah} (${capaianHlm} Halaman)`;
+
+      // Target PTS
+      const targetPtsSurah = data.PTS_SURAT || "-";
+      const targetPtsHlm = parseHalaman(data.PTS_HALAMAN);
+      document.getElementById('dispTargetPTS').innerText = `${targetPtsSurah} (${targetPtsHlm} Halaman)`;
+      updateProgress('badgePTS', 'barPTS', 'percentPTS', capaianHlm, targetPtsHlm);
+
+      // Target PAS
+      const targetPasSurah = data.PAS_SURAT || "-";
+      const targetPasHlm = parseHalaman(data.PAS_HALAMAN);
+      document.getElementById('dispTargetPAS').innerText = `${targetPasSurah} (${targetPasHlm} Halaman)`;
+      updateProgress('badgePAS', 'barPAS', 'percentPAS', capaianHlm, targetPasHlm);
+
+      // Motivasi Guru
+      const motivCard = document.getElementById('motivCard');
       if (data.MOTIVASI_GURU && data.MOTIVASI_GURU.trim() !== "") {
-        document.getElementById('dispMotivasi').innerText = `"${data.MOTIVASI_GURU}"`;
-        document.getElementById('motivCard').style.display = 'block';
+        document.getElementById('dispMotivasi').innerText = `"${data.MOTIVASI_GURU.trim()}"`;
+        motivCard.style.display = 'block';
       } else {
-        document.getElementById('motivCard').style.display = 'none';
+        motivCard.style.display = 'none';
       }
     }
 
