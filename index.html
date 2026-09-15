@@ -56,6 +56,7 @@
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
+      transition: all 0.3s ease;
     }
 
     .tab-btn.active {
@@ -95,6 +96,10 @@
       outline: none;
     }
 
+    .form-group input:focus {
+      border-color: #34d399;
+    }
+
     .btn {
       width: 100%;
       padding: 12px;
@@ -105,6 +110,12 @@
       font-weight: 600;
       cursor: pointer;
       font-size: 0.95rem;
+      transition: opacity 0.2s;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .btn-logout {
@@ -223,10 +234,12 @@
       border-radius: 8px;
       margin-bottom: 8px;
       cursor: pointer;
+      transition: background 0.2s;
     }
 
-    .student-item:hover {
-      background: rgba(168, 85, 247, 0.2);
+    .student-item:hover, .student-item.active {
+      background: rgba(168, 85, 247, 0.25);
+      border: 1px solid rgba(168, 85, 247, 0.4);
     }
 
     .edit-box {
@@ -251,13 +264,13 @@
       <h2 class="title">Login Siswa</h2>
       <div class="form-group">
         <label>NISN Siswa</label>
-        <input type="text" id="nisn" placeholder="Masukkan NISN" required>
+        <input type="text" id="nisn" placeholder="Masukkan NISN" required autocomplete="off">
       </div>
       <div class="form-group">
         <label>Password</label>
         <input type="password" id="studentPass" placeholder="Masukkan Password" required>
       </div>
-      <button type="submit" class="btn">Masuk Portal Siswa</button>
+      <button type="submit" class="btn" id="btnStudentLogin">Masuk Portal Siswa</button>
     </form>
 
     <!-- FORM LOGIN GURU -->
@@ -267,7 +280,7 @@
         <label>PIN Guru / Admin</label>
         <input type="password" id="adminPin" placeholder="Masukkan PIN Admin" required>
       </div>
-      <button type="submit" class="btn">Masuk Panel Guru</button>
+      <button type="submit" class="btn" id="btnAdminLogin">Masuk Panel Guru</button>
     </form>
 
     <div id="loginError" style="color: #f87171; font-size: 0.85rem; text-align: center; margin-top: 15px;"></div>
@@ -360,12 +373,12 @@
           
           <div class="form-group">
             <label>Capaian Surah</label>
-            <input type="text" id="editSurah">
+            <input type="text" id="editSurah" placeholder="Contoh: An-Naba'">
           </div>
 
           <div class="form-group">
             <label>Capaian Halaman</label>
-            <input type="text" id="editHalaman">
+            <input type="text" id="editHalaman" placeholder="Contoh: 5">
           </div>
 
           <button type="submit" class="btn" id="saveBtn">Simpan Perubahan</button>
@@ -376,7 +389,8 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxcJ9Xlb4DFtRTt1-aeEvZwDBkUlcFnH4nv6CDRmEN_ocaL8T7IFVXzlNVMgJOLQzdR/exec"; 
+    // URL Web App dari Apps Script Anda
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwT0dhVDfYdxdm9yNQhzps7BMisrI9AO70_FqTEkU5TYxK-uNJAA5d66oHXe1Hza82j/exec"; 
 
     let currentAdminPin = "";
     let studentDataList = [];
@@ -396,12 +410,30 @@
       }
     }
 
+    // Helper untuk membaca properti objek secara fleksibel (case-insensitive)
+    function getProp(obj, keys) {
+      if (!obj) return undefined;
+      for (let key of keys) {
+        if (obj[key] !== undefined) return obj[key];
+        // Cari case-insensitive
+        let foundKey = Object.keys(obj).find(k => k.toLowerCase() === key.toLowerCase());
+        if (foundKey && obj[foundKey] !== undefined) return obj[foundKey];
+      }
+      return undefined;
+    }
+
     // LOGIN SISWA
     document.getElementById('studentLoginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const nisn = document.getElementById('nisn').value;
-      const pass = document.getElementById('studentPass').value;
-      
+      const nisn = document.getElementById('nisn').value.trim();
+      const pass = document.getElementById('studentPass').value.trim();
+      const btn = document.getElementById('btnStudentLogin');
+      const errBox = document.getElementById('loginError');
+
+      btn.disabled = true;
+      btn.innerText = "Memeriksa...";
+      errBox.innerText = "";
+
       try {
         const res = await fetch(`${SCRIPT_URL}?action=student_login&nisn=${encodeURIComponent(nisn)}&password=${encodeURIComponent(pass)}`);
         const result = await res.json();
@@ -409,18 +441,28 @@
         if (result.status === 'success') {
           showStudentDashboard(result.data);
         } else {
-          document.getElementById('loginError').innerText = result.message;
+          errBox.innerText = result.message || "NISN atau Password salah!";
         }
       } catch (err) {
-        document.getElementById('loginError').innerText = "Gagal terhubung ke server.";
+        console.error(err);
+        errBox.innerText = "Gagal terhubung ke server. Pastikan koneksi aman.";
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Masuk Portal Siswa";
       }
     });
 
     // LOGIN GURU
     document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const pin = document.getElementById('adminPin').value;
-      
+      const pin = document.getElementById('adminPin').value.trim();
+      const btn = document.getElementById('btnAdminLogin');
+      const errBox = document.getElementById('loginError');
+
+      btn.disabled = true;
+      btn.innerText = "Memeriksa...";
+      errBox.innerText = "";
+
       try {
         const res = await fetch(`${SCRIPT_URL}?action=admin_login&pin=${encodeURIComponent(pin)}`);
         const result = await res.json();
@@ -429,10 +471,14 @@
           currentAdminPin = pin;
           showAdminDashboard();
         } else {
-          document.getElementById('loginError').innerText = result.message;
+          errBox.innerText = result.message || "PIN Admin Salah!";
         }
       } catch (err) {
-        document.getElementById('loginError').innerText = "Gagal terhubung ke server.";
+        console.error(err);
+        errBox.innerText = "Gagal terhubung ke server.";
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Masuk Panel Guru";
       }
     });
 
@@ -471,13 +517,18 @@
       document.getElementById('loginCard').style.display = 'none';
       document.getElementById('studentDashboard').style.display = 'block';
 
+      // Mengambil data secara fleksibel sesuai kolom
+      const nama = getProp(data, ['NAMA', 'nama']) || "Siswa";
+      const nisn = getProp(data, ['NISN', 'nisn']) || "-";
+      const kelas = getProp(data, ['KELAS', 'kelas']) || "-";
+
       // Meta Data
-      document.getElementById('dispName').innerText = data.NAMA || "Siswa";
-      document.getElementById('dispMeta').innerText = `NISN: ${data.NISN || '-'} | Kelas: ${data.KELAS || '-'}`;
+      document.getElementById('dispName').innerText = nama;
+      document.getElementById('dispMeta').innerText = `NISN: ${nisn} | Kelas: ${kelas}`;
 
       // Capaian Terakhir
-      const capaianSurah = data.CAPAIAN_SURAT || "-";
-      const capaianHlm = parseHalaman(data.CAPAIAN_HALAMAN);
+      const capaianSurah = getProp(data, ['CAPAIAN_SURAT', 'CAPAIAN_SURAH', 'capaian_surat']) || "-";
+      const capaianHlm = parseHalaman(getProp(data, ['CAPAIAN_HALAMAN', 'capaian_halaman']));
       document.getElementById('dispCapaian').innerText = `${capaianSurah} (${capaianHlm} Halaman)`;
 
       // Medali & Peringkat
@@ -508,14 +559,14 @@
       }
 
       // Target PTS
-      const targetPtsSurah = data.PTS_SURAT || "-";
-      const targetPtsHlm = parseHalaman(data.PTS_HALAMAN);
+      const targetPtsSurah = getProp(data, ['PTS_SURAT', 'PTS_SURAH']) || "-";
+      const targetPtsHlm = parseHalaman(getProp(data, ['PTS_HALAMAN']));
       document.getElementById('dispTargetPTS').innerText = `${targetPtsSurah} (${targetPtsHlm} Halaman)`;
       updateProgress('badgePTS', 'barPTS', 'percentPTS', capaianHlm, targetPtsHlm);
 
       // Target PAS
-      const targetPasSurah = data.PAS_SURAT || "-";
-      const targetPasHlm = parseHalaman(data.PAS_HALAMAN);
+      const targetPasSurah = getProp(data, ['PAS_SURAT', 'PAS_SURAH']) || "-";
+      const targetPasHlm = parseHalaman(getProp(data, ['PAS_HALAMAN']));
       document.getElementById('dispTargetPAS').innerText = `${targetPasSurah} (${targetPasHlm} Halaman)`;
       updateProgress('badgePAS', 'barPAS', 'percentPAS', capaianHlm, targetPasHlm);
     }
@@ -531,8 +582,11 @@
         if (result.status === 'success') {
           studentDataList = result.data;
           renderStudentList();
+        } else {
+          alert(result.message || "Gagal mengambil data siswa.");
         }
       } catch (err) {
+        console.error(err);
         alert("Gagal memuat daftar siswa.");
       }
     }
@@ -541,22 +595,42 @@
       const listContainer = document.getElementById('studentList');
       listContainer.innerHTML = "";
 
+      if (studentDataList.length === 0) {
+        listContainer.innerHTML = "<p style='color:#9ca3af; text-align:center;'>Tidak ada data siswa.</p>";
+        return;
+      }
+
       studentDataList.forEach((s, idx) => {
+        const nama = getProp(s, ['NAMA', 'nama']) || "Siswa";
+        const kelas = getProp(s, ['KELAS', 'kelas']) || "-";
+        const nisn = getProp(s, ['NISN', 'nisn']) || "-";
+
         const item = document.createElement('div');
         item.className = "student-item";
-        item.innerHTML = `<strong>${s.NAMA}</strong><br><small style="color:#9ca3af;">${s.KELAS} | NISN: ${s.NISN}</small>`;
+        item.id = `student-item-${idx}`;
+        item.innerHTML = `<strong>${nama}</strong><br><small style="color:#9ca3af;">${kelas} | NISN: ${nisn}</small>`;
         item.onclick = () => selectStudentForEdit(idx);
         listContainer.appendChild(item);
       });
     }
 
     function selectStudentForEdit(index) {
+      // Highlight siswa yang dipilih
+      document.querySelectorAll('.student-item').forEach(el => el.classList.remove('active'));
+      const activeEl = document.getElementById(`student-item-${index}`);
+      if (activeEl) activeEl.classList.add('active');
+
       const s = studentDataList[index];
-      document.getElementById('selectedStudentTitle').innerText = `Edit: ${s.NAMA}`;
+      const nama = getProp(s, ['NAMA', 'nama']) || "Siswa";
+      const surah = getProp(s, ['CAPAIAN_SURAT', 'CAPAIAN_SURAH']) || "";
+      const halaman = getProp(s, ['CAPAIAN_HALAMAN']) || "";
+
+      document.getElementById('selectedStudentTitle').innerText = `Edit Hafalan: ${nama}`;
       document.getElementById('editRowIndex').value = s.ROW_INDEX;
-      document.getElementById('editSurah').value = s.CAPAIAN_SURAT || "";
-      document.getElementById('editHalaman').value = s.CAPAIAN_HALAMAN || "";
+      document.getElementById('editSurah').value = surah;
+      document.getElementById('editHalaman').value = halaman;
       document.getElementById('updateForm').style.display = 'block';
+      document.getElementById('updateStatus').innerText = "";
     }
 
     // SIMPAN PERUBAHAN DARI PANEL GURU
@@ -572,8 +646,8 @@
       const payload = {
         pin: currentAdminPin,
         rowIndex: document.getElementById('editRowIndex').value,
-        capaianSurah: document.getElementById('editSurah').value,
-        capaianHalaman: document.getElementById('editHalaman').value
+        capaianSurah: document.getElementById('editSurah').value.trim(),
+        capaianHalaman: document.getElementById('editHalaman').value.trim()
       };
 
       try {
@@ -587,12 +661,14 @@
         if (result.status === 'success') {
           updateStatus.style.color = "#4ade80";
           updateStatus.innerText = "✓ Berhasil disimpan!";
-          showAdminDashboard();
+          // Refresh data siswa di panel guru
+          await showAdminDashboard();
         } else {
           updateStatus.style.color = "#f87171";
-          updateStatus.innerText = result.message;
+          updateStatus.innerText = result.message || "Gagal menyimpan.";
         }
       } catch (err) {
+        console.error(err);
         updateStatus.style.color = "#f87171";
         updateStatus.innerText = "Gagal menyimpan data.";
       } finally {
