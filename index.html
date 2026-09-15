@@ -429,6 +429,7 @@
       }
     }
 
+    // FUNGSI DASHBOARD SISWA (SUDAH DIPERBAIKI)
     function showStudentDashboard(data) {
       document.getElementById('loginCard').style.display = 'none';
       document.getElementById('studentDashboard').style.display = 'block';
@@ -448,10 +449,9 @@
       }
 
       // Capaian Terakhir
-      // Contoh render di HTML siswa:
-      const capaianSurat = studentData.CAPAIAN_TERAKHIR_SURAT || '-';
-      const capaianHalaman = studentData.CAPAIAN_TERAKHIR_HALAMAN || '0';
-      document.getElementById('capaian-text').innerText = `${capaianSurat} (${capaianHalaman} Halaman)`;
+      const capaianSurat = data.CAPAIAN_TERAKHIR_SURAT || '-';
+      const capaianHlm = parseHalaman(data.CAPAIAN_TERAKHIR_HALAMAN);
+      document.getElementById('dispCapaian').innerText = `${capaianSurat} (${capaianHlm} Halaman)`;
 
       // Target PTS
       const targetPtsSurah = data.PTS_SURAT || "-";
