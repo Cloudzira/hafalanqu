@@ -448,9 +448,10 @@
       }
 
       // Capaian Terakhir
-      const capaianSurah = data.CAPAIAN_SURAT || "-";
-      const capaianHlm = parseHalaman(data.CAPAIAN_HALAMAN);
-      document.getElementById('dispCapaian').innerText = `${capaianSurah} (${capaianHlm} Halaman)`;
+      // Contoh render di HTML siswa:
+      const capaianSurat = studentData.CAPAIAN_TERAKHIR_SURAT || '-';
+      const capaianHalaman = studentData.CAPAIAN_TERAKHIR_HALAMAN || '0';
+      document.getElementById('capaian-text').innerText = `${capaianSurat} (${capaianHalaman} Halaman)`;
 
       // Target PTS
       const targetPtsSurah = data.PTS_SURAT || "-";
