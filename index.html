@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Data - Glassmorphism</title>
+  <title>Pantauan Hafalan Al-Qur'an Siswa</title>
   <style>
-    /* Reset & Base Styles */
     * {
       margin: 0;
       padding: 0;
@@ -18,55 +17,137 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
-      color: #f8fafc;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1f2937 100%);
+      color: #f3f4f6;
       padding: 20px;
       position: relative;
       overflow-x: hidden;
     }
 
-    /* Decorative Background Glow Spheres */
+    /* Ambient Glow Backgrounds */
     .glow-1 {
       position: absolute;
-      top: 10%;
-      left: 15%;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(0,0,0,0) 70%);
-      border-radius: 50%;
-      z-index: 0;
-      filter: blur(50px);
-    }
-
-    .glow-2 {
-      position: absolute;
-      bottom: 10%;
-      right: 15%;
-      width: 350px;
-      height: 350px;
-      background: radial-gradient(circle, rgba(236, 72, 153, 0.35) 0%, rgba(0,0,0,0) 70%);
+      top: 5%;
+      left: 10%;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.35) 0%, rgba(0,0,0,0) 70%);
       border-radius: 50%;
       z-index: 0;
       filter: blur(60px);
     }
 
-    /* Container Glassmorphism */
-    .glass-container {
+    .glow-2 {
+      position: absolute;
+      bottom: 5%;
+      right: 10%;
+      width: 380px;
+      height: 380px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(0,0,0,0) 70%);
+      border-radius: 50%;
+      z-index: 0;
+      filter: blur(70px);
+    }
+
+    /* Glass Container Card */
+    .glass-card {
       position: relative;
       z-index: 1;
       width: 100%;
-      max-width: 1000px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.125);
+      max-width: 440px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      padding: 35px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      transition: all 0.3s ease;
     }
 
-    /* Header Title */
-    .header {
+    .glass-card.wide {
+      max-width: 750px;
+    }
+
+    .title {
+      font-size: 1.7rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 25px;
+      background: linear-gradient(90deg, #34d399, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .form-group input:focus {
+      border-color: #34d399;
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.3);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(90deg, #059669, #2563eb);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      box-shadow: 0 0 15px rgba(52, 211, 153, 0.4);
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 8px 16px;
+      width: auto;
+      font-size: 0.85rem;
+    }
+
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.3);
+    }
+
+    .error-msg {
+      color: #f87171;
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    /* Dashboard UI */
+    .dashboard-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -75,189 +156,234 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .header h2 {
-      font-size: 1.8rem;
-      font-weight: 600;
-      background: linear-gradient(90deg, #38bdf8, #818cf8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .student-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .info-box {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .info-box span {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      display: block;
+      margin-bottom: 6px;
+      text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
-    /* Status Indicator & Reload Button */
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .btn-refresh {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #fff;
-      padding: 8px 16px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: all 0.3s ease;
-    }
-
-    .btn-refresh:hover {
-      background: rgba(255, 255, 255, 0.25);
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-    }
-
-    /* Table Wrapper (Responsive Scroll) */
-    .table-responsive {
-      width: 100%;
-      overflow-x: auto;
-      border-radius: 12px;
-    }
-
-    /* Glassmorphism Table */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-
-    th {
-      background: rgba(255, 255, 255, 0.08);
-      color: #94a3b8;
+    .info-box p {
+      font-size: 1.1rem;
       font-weight: 600;
-      text-transform: uppercase;
-      font-size: 0.75rem;
-      letter-spacing: 1px;
-      padding: 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f9fafb;
     }
 
-    td {
-      padding: 16px;
-      font-size: 0.95rem;
-      color: #e2e8f0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      transition: background 0.2s ease;
+    .target-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 15px;
     }
 
-    tbody tr {
-      transition: all 0.2s ease;
+    /* Target Status Badge */
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 10px;
     }
 
-    tbody tr:hover {
+    .badge-tercapai {
+      background: rgba(34, 197, 94, 0.2);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .badge-belum {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      margin-top: 10px;
       background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      height: 8px;
+      overflow: hidden;
     }
 
-    tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    /* Loading state Spinner & Text */
-    .loading-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 50px 0;
-      color: #94a3b8;
-    }
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid rgba(255, 255, 255, 0.1);
-      border-top: 3px solid #818cf8;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 15px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #34d399, #60a5fa);
+      width: 0%;
+      transition: width 0.8s ease-in-out;
     }
   </style>
 </head>
 <body>
 
-  <!-- Accent Glow Spheres -->
   <div class="glow-1"></div>
   <div class="glow-2"></div>
 
-  <!-- Main Glass Container -->
-  <div class="glass-container">
-    <div class="header">
-      <h2>Data Spreadsheet</h2>
-      <div class="header-actions">
-        <button class="btn-refresh" onclick="fetchData()">Refresh</button>
+  <!-- HALAMAN LOGIN -->
+  <div id="loginCard" class="glass-card">
+    <h2 class="title">Pantauan Hafalan</h2>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="nisn">NISN Siswa</label>
+        <input type="text" id="nisn" placeholder="Masukkan NISN" required>
       </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Masukkan Password" required>
+      </div>
+      <button type="submit" class="btn" id="loginBtn">Masuk Portal</button>
+      <div id="loginError" class="error-msg"></div>
+    </form>
+  </div>
+
+  <!-- HALAMAN DASHBOARD SISWA -->
+  <div id="dashboardCard" class="glass-card wide" style="display: none;">
+    <div class="dashboard-header">
+      <div>
+        <h2 style="font-size: 1.4rem;" id="studentName">Nama Siswa</h2>
+        <span style="font-size: 0.85rem; color: #9ca3af;" id="studentMeta">NISN: - | Kelas: -</span>
+      </div>
+      <button class="btn btn-logout" onclick="logout()">Keluar</button>
     </div>
 
-    <div id="loading" class="loading-box">
-      <div class="spinner"></div>
-      <p>Mengambil data terbaru...</p>
+    <!-- Capaian Terakhir -->
+    <div class="info-box" style="margin-bottom: 20px; border-color: rgba(52, 211, 153, 0.3); background: rgba(52, 211, 153, 0.05);">
+      <span>📖 Capaian Hafalan Terakhir</span>
+      <p id="dispCapaian">Surah - (- Halaman)</p>
     </div>
 
-    <div class="table-responsive">
-      <table id="dataTable" style="display: none;">
-        <thead id="tableHeader"></thead>
-        <tbody id="tableBody"></tbody>
-      </table>
+    <!-- Grid Target Tengah & Akhir Semester -->
+    <div class="target-grid">
+      <!-- Target Tengah Semester -->
+      <div class="info-box">
+        <span>Target Tengah Semester</span>
+        <p id="dispTargetPTS">Surah - (- Hlm)</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+          <span id="badgePTS" class="badge">Memuat...</span>
+          <span id="percentPTS" style="font-size: 0.8rem; color: #9ca3af;">0%</span>
+        </div>
+        <div class="progress-container">
+          <div id="barPTS" class="progress-bar"></div>
+        </div>
+      </div>
+
+      <!-- Target Akhir Semester -->
+      <div class="info-box">
+        <span>Target Akhir Semester</span>
+        <p id="dispTargetPAS">Surah - (- Hlm)</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+          <span id="badgePAS" class="badge">Memuat...</span>
+          <span id="percentPAS" style="font-size: 0.8rem; color: #9ca3af;">0%</span>
+        </div>
+        <div class="progress-container">
+          <div id="barPAS" class="progress-bar"></div>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP ANDA DI SINI
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMsqZ-kW6h9BrDTE01wB2fDFUeJ165-PZaAA8oeAl1FH9TX2OOoLCrAExy50AcI5l-/exec";
+    // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLjNpj-hs6edtp0FzrbZUjqcWtd5cigVGm686YHEYZSWZ4cvIAz1ngCjJ3VLHHWZFH/exec";
 
-    async function fetchData() {
-      const loadingEl = document.getElementById('loading');
-      const tableEl = document.getElementById('dataTable');
+    const loginForm = document.getElementById('loginForm');
+    const loginCard = document.getElementById('loginCard');
+    const dashboardCard = document.getElementById('dashboardCard');
+    const loginError = document.getElementById('loginError');
+    const loginBtn = document.getElementById('loginBtn');
 
-      // Tampilkan kembali loading saat me-refresh
-      loadingEl.style.display = 'flex';
-      tableEl.style.display = 'none';
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nisn = document.getElementById('nisn').value;
+      const password = document.getElementById('password').value;
+
+      loginError.innerText = "";
+      loginBtn.innerText = "Memproses...";
+      loginBtn.disabled = true;
 
       try {
-        const response = await fetch(SCRIPT_URL);
-        const data = await response.json();
+        const response = await fetch(`${SCRIPT_URL}?nisn=${encodeURIComponent(nisn)}&password=${encodeURIComponent(password)}`);
+        const result = await response.json();
 
-        if (data.length > 0) {
-          loadingEl.style.display = 'none';
-          tableEl.style.display = 'table';
-
-          // Render Header Tabel (Baris Pertama Spreadsheet)
-          const headerRow = data[0];
-          const thead = document.getElementById('tableHeader');
-          let headerHTML = '<tr>';
-          headerRow.forEach(header => {
-            headerHTML += `<th>${header}</th>`;
-          });
-          headerHTML += '</tr>';
-          thead.innerHTML = headerHTML;
-
-          // Render Isi Tabel (Baris Selanjutnya)
-          const tbody = document.getElementById('tableBody');
-          let bodyHTML = '';
-          for (let i = 1; i < data.length; i++) {
-            bodyHTML += '<tr>';
-            data[i].forEach(cell => {
-              bodyHTML += `<td>${cell}</td>`;
-            });
-            bodyHTML += '</tr>';
-          }
-          tbody.innerHTML = bodyHTML;
+        if (result.status === "success") {
+          renderDashboard(result.data);
         } else {
-          loadingEl.innerHTML = '<p>Data kosong pada spreadsheet.</p>';
+          loginError.innerText = result.message || "NISN atau Password salah.";
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        loadingEl.innerHTML = '<p style="color: #f87171;">Gagal mengambil data. Pastikan URL Web App sudah benar dan akses dideploy ke "Anyone".</p>';
+      } catch (err) {
+        console.error(err);
+        loginError.innerText = "Gagal terhubung ke server.";
+      } finally {
+        loginBtn.innerText = "Masuk Portal";
+        loginBtn.disabled = false;
+      }
+    });
+
+    function renderDashboard(data) {
+      loginCard.style.display = 'none';
+      dashboardCard.style.display = 'block';
+
+      // Meta Data Siswa
+      document.getElementById('studentName').innerText = data["Nama"] || "Siswa";
+      document.getElementById('studentMeta').innerText = `NISN: ${data["NISN"] || '-'} | Kelas: ${data["Kelas"] || '-'}`;
+
+      // Data Hafalan
+      const capaianSurah = data["Capaian Terakhir (Surat)"] || "-";
+      const capaianHlm = parseFloat(data["Capaian Terakhir (Jumlah Halaman)"] || 0);
+      document.getElementById('dispCapaian').innerText = `${capaianSurah} (${capaianHlm} Halaman)`;
+
+      // Target PTS
+      const targetPtsSurah = data["Target Tengah Semester (Surat)"] || "-";
+      const targetPtsHlm = parseFloat(data["Target Tengah Semester (Jumlah Halaman)"] || 0);
+      document.getElementById('dispTargetPTS').innerText = `${targetPtsSurah} (${targetPtsHlm} Halaman)`;
+      updateTargetStatus('badgePTS', 'barPTS', 'percentPTS', capaianHlm, targetPtsHlm);
+
+      // Target PAS
+      const targetPasSurah = data["Target Akhir Semester (Surat)"] || "-";
+      const targetPasHlm = parseFloat(data["Target Akhir Semester (Jumlah Halaman)"] || 0);
+      document.getElementById('dispTargetPAS').innerText = `${targetPasSurah} (${targetPasHlm} Halaman)`;
+      updateTargetStatus('badgePAS', 'barPAS', 'percentPAS', capaianHlm, targetPasHlm);
+    }
+
+    function updateTargetStatus(badgeId, barId, percentId, capaian, target) {
+      const badge = document.getElementById(badgeId);
+      const bar = document.getElementById(barId);
+      const percentLabel = document.getElementById(percentId);
+
+      const percent = target > 0 ? Math.min(Math.round((capaian / target) * 100), 100) : 0;
+      percentLabel.innerText = percent + "%";
+      bar.style.width = percent + "%";
+
+      if (capaian >= target && target > 0) {
+        badge.className = "badge badge-tercapai";
+        badge.innerText = "Tercapai ✓";
+      } else {
+        badge.className = "badge badge-belum";
+        badge.innerText = "Belum Tercapai ✗";
       }
     }
 
-    // Jalankan otomatis saat halaman dibuka
-    fetchData();
+    function logout() {
+      document.getElementById('loginForm').reset();
+      dashboardCard.style.display = 'none';
+      loginCard.style.display = 'block';
+    }
   </script>
 </body>
 </html>
