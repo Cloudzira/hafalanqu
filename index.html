@@ -284,11 +284,13 @@
       </div>
     </div>
 
-    <!-- KARTU MOTIVASI GURU -->
-    <div style="background: rgba(168, 85, 247, 0.1); border: 1px dashed rgba(168, 85, 247, 0.4); padding: 15px; border-radius: 12px; display: none;" id="motivCard">
-      <span style="font-size: 0.8rem; color: #c084fc; font-weight: 600;">💬 PESAN & MOTIVASI GURU:</span>
-      <p id="dispMotivasi" style="font-style: italic; margin-top: 8px; color: #e2e8f0;">"-"</p>
-    </div>
+  <!-- KARTU MOTIVASI GURU (PERMANEN) -->
+<div style="background: rgba(168, 85, 247, 0.1); border: 1px dashed rgba(168, 85, 247, 0.4); padding: 15px; border-radius: 12px; margin-top: 20px;">
+  <span style="font-size: 0.8rem; color: #c084fc; font-weight: 600;">💬 PESAN & MOTIVASI GURU:</span>
+  <p style="font-style: italic; margin-top: 8px; color: #e2e8f0;">
+    "Semangat terus menghafalnya! Tetap istiqomah dan jangan lupa muroja'ah juga setiap hari"
+  </p>
+</div>
   </div>
 
   <!-- DASHBOARD GURU -->
@@ -448,16 +450,7 @@
       const targetPasHlm = parseHalaman(data.PAS_HALAMAN);
       document.getElementById('dispTargetPAS').innerText = `${targetPasSurah} (${targetPasHlm} Halaman)`;
       updateProgress('badgePAS', 'barPAS', 'percentPAS', capaianHlm, targetPasHlm);
-
-      // Motivasi Guru
-      const motivCard = document.getElementById('motivCard');
-      if (data.MOTIVASI_GURU && data.MOTIVASI_GURU.trim() !== "") {
-        document.getElementById('dispMotivasi').innerText = `"${data.MOTIVASI_GURU.trim()}"`;
-        motivCard.style.display = 'block';
-      } else {
-        motivCard.style.display = 'none';
-      }
-    }
+  }
 
     async function showAdminDashboard() {
       document.getElementById('loginCard').style.display = 'none';
