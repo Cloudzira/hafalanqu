@@ -3,74 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hafalan Al Quran XA</title>
+  <title>TahfizhQu - Portal Siswa</title>
   <style>
+    :root {
+      --bg-color: #12181f;
+      --card-bg: #1e2630;
+      --card-border: #2e3846;
+      --text-main: #f1f5f9;
+      --text-sub: #94a3b8;
+      --accent-yellow: #f59e0b;
+      --accent-green: #10b981;
+      --accent-purple: #8b5cf6;
+      --danger-red: #ef4444;
+    }
+
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
-      min-height: 100vh;
+      background-color: var(--bg-color);
+      color: var(--text-main);
       display: flex;
       justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1f2937 100%);
-      color: #f3f4f6;
+      min-height: 100vh;
       padding: 20px;
     }
 
-    .glass-card {
+    .container {
       width: 100%;
-      max-width: 440px;
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
+      max-width: 600px;
+    }
+
+    /* FORM LOGIN */
+    .login-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
       padding: 30px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      border-radius: 16px;
+      margin-top: 50px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     }
 
-    .glass-card.wide {
-      max-width: 900px;
-    }
-
-    .role-tabs {
-      display: flex;
-      gap: 10px;
+    .login-box h2 {
       margin-bottom: 20px;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 5px;
-      border-radius: 12px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      background: transparent;
-      color: #9ca3af;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .tab-btn.active {
-      background: rgba(255, 255, 255, 0.1);
-      color: #34d399;
-    }
-
-    .title {
-      font-size: 1.5rem;
-      font-weight: 700;
       text-align: center;
-      margin-bottom: 20px;
-      background: linear-gradient(90deg, #34d399, #c084fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
 
     .form-group {
@@ -80,711 +60,396 @@
     .form-group label {
       display: block;
       margin-bottom: 6px;
-      font-size: 0.85rem;
-      color: #9ca3af;
+      color: var(--text-sub);
+      font-size: 14px;
     }
 
-    .form-group input, .form-group textarea {
+    .form-group input {
       width: 100%;
       padding: 12px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: #161d26;
       color: #fff;
-      font-size: 0.95rem;
-      outline: none;
+      font-size: 16px;
     }
 
-    .btn {
+    .btn-login {
       width: 100%;
       padding: 12px;
-      background: linear-gradient(90deg, #059669, #7c3aed);
+      background: var(--accent-green);
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       color: white;
-      font-weight: 600;
+      font-weight: bold;
+      font-size: 16px;
       cursor: pointer;
-      font-size: 0.95rem;
+      margin-top: 10px;
+    }
+
+    .btn-login:hover {
+      opacity: 0.9;
+    }
+
+    /* DASHBOARD SISWA */
+    .dashboard {
+      display: none; /* Disembunyikan sebelum login */
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .header-user {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .user-name {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .user-meta {
+      color: var(--text-sub);
+      font-size: 14px;
+      margin-top: 4px;
     }
 
     .btn-logout {
-      background: rgba(239, 68, 68, 0.2);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      color: #fca5a5;
+      background: #3b2027;
+      color: #f87171;
+      border: 1px solid #7f1d1d;
       padding: 8px 16px;
       border-radius: 8px;
       cursor: pointer;
+      font-weight: bold;
     }
 
-    /* Target & Progress Grid */
-    .target-grid {
+    /* CARDS */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .card-rank {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .rank-icon {
+      font-size: 32px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .card-sub {
+      color: var(--text-sub);
+      font-size: 14px;
+    }
+
+    .card-pesan {
+      border-left: 4px solid var(--accent-green);
+      background: #162a26;
+    }
+
+    .pesan-header {
+      color: var(--accent-green);
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .grid-target {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin-bottom: 20px;
+      gap: 12px;
     }
 
-    @media (max-width: 600px) {
-      .target-grid { grid-template-columns: 1fr; }
-    }
-
-    .target-box {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 15px;
-    }
-
-    .progress-bar-bg {
-      width: 100%;
+    .progress-bar {
       height: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
+      background: #2a3442;
+      border-radius: 4px;
       overflow: hidden;
       margin-top: 10px;
     }
 
-    .progress-bar-fill {
+    .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #34d399, #a855f7);
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-green));
       width: 0%;
-      transition: width 0.5s ease;
+      transition: width 0.3s ease;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .badge-success { background: rgba(52, 211, 153, 0.2); color: #34d399; }
-    .badge-warning { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
-
-    /* Badge Peringkat (Medali Guru) */
-    .rank-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      font-weight: 700;
-      font-size: 0.9rem;
-      margin-right: 10px;
-      flex-shrink: 0;
-    }
-    .rank-1 { background: linear-gradient(135deg, #ffe066, #f59e0b); color: #451a03; box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
-    .rank-2 { background: linear-gradient(135deg, #e2e8f0, #94a3b8); color: #0f172a; box-shadow: 0 0 10px rgba(148, 163, 184, 0.5); }
-    .rank-3 { background: linear-gradient(135deg, #fdba74, #d97706); color: #451a03; box-shadow: 0 0 10px rgba(217, 119, 6, 0.5); }
-    .rank-other { background: rgba(255, 255, 255, 0.1); color: #9ca3af; font-size: 0.8rem; }
-
-    /* Card Badge Medali Siswa */
-    .student-medal-card {
-      display: flex;
-      align-items: center;
-      padding: 16px 20px;
-      border-radius: 16px;
-      margin-bottom: 20px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: all 0.3s ease;
-    }
-
-    .student-medal-card.gold {
-      background: linear-gradient(135deg, rgba(255, 224, 102, 0.15), rgba(245, 158, 11, 0.15));
-      border: 1px solid rgba(245, 158, 11, 0.4);
-    }
-
-    .student-medal-card.silver {
-      background: linear-gradient(135deg, rgba(226, 232, 240, 0.15), rgba(148, 163, 184, 0.15));
-      border: 1px solid rgba(148, 163, 184, 0.4);
-    }
-
-    .student-medal-card.bronze {
-      background: linear-gradient(135deg, rgba(253, 186, 116, 0.15), rgba(217, 119, 6, 0.15));
-      border: 1px solid rgba(217, 119, 6, 0.4);
-    }
-
-    .student-medal-card.top10 {
-      background: linear-gradient(135deg, rgba(52, 211, 153, 0.15), rgba(16, 185, 129, 0.15));
-      border: 1px solid rgba(52, 211, 153, 0.4);
-    }
-
-    .medal-icon-large {
-      font-size: 2.5rem;
-      margin-right: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .medal-text h4 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #f3f4f6;
-    }
-
-    .medal-text p {
-      font-size: 0.85rem;
-      color: #9ca3af;
-      margin-top: 2px;
-    }
-
-    /* Layout Panel Guru */
-    .admin-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.3fr;
-      gap: 20px;
-      margin-top: 20px;
-    }
-
-    @media (max-width: 700px) {
-      .admin-grid { grid-template-columns: 1fr; }
-    }
-
-    .student-list-box {
-      max-height: 440px;
-      overflow-y: auto;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 12px;
-      padding: 10px;
-    }
-
-    .student-item {
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.04);
-      border-radius: 10px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .student-item:hover, .student-item.selected {
-      background: rgba(168, 85, 247, 0.25);
-      border: 1px solid rgba(168, 85, 247, 0.4);
-    }
-
-    .edit-box {
-      background: rgba(255, 255, 255, 0.03);
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .student-progress-summary {
-      background: rgba(0, 0, 0, 0.25);
-      border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .progress-metric {
+    .progress-info {
       display: flex;
       justify-content: space-between;
-      font-size: 0.8rem;
-      margin-bottom: 4px;
-      color: #cbd5e1;
+      font-size: 12px;
+      margin-top: 8px;
     }
 
-    .notif-box {
-      background: rgba(52, 211, 153, 0.08);
-      border: 1px solid rgba(52, 211, 153, 0.3);
-      border-left: 4px solid #34d399;
-      padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 20px;
+    .badge-tuntas {
+      background: #362f1c;
+      color: var(--accent-yellow);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
 <body>
 
-  <!-- CARD LOGIN -->
-  <div id="loginCard" class="glass-card">
-    <div class="role-tabs">
-      <button class="tab-btn active" id="tabStudent" onclick="switchRole('student')">Siswa</button>
-      <button class="tab-btn" id="tabAdmin" onclick="switchRole('admin')">Guru / Admin</button>
-    </div>
-
-    <!-- FORM LOGIN SISWA -->
-    <form id="studentLoginForm">
-      <h2 class="title">Login Siswa</h2>
-      <div class="form-group">
-        <label>NISN Siswa</label>
-        <input type="text" id="nisn" placeholder="Masukkan NISN" required>
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="studentPass" placeholder="Masukkan Password" required>
-      </div>
-      <button type="submit" class="btn">Masuk Portal Siswa</button>
-    </form>
-
-    <!-- FORM LOGIN GURU -->
-    <form id="adminLoginForm" style="display: none;">
-      <h2 class="title">Panel Guru</h2>
-      <div class="form-group">
-        <label>PIN Guru / Admin</label>
-        <input type="password" id="adminPin" placeholder="Masukkan PIN Admin" required>
-      </div>
-      <button type="submit" class="btn">Masuk Panel Guru</button>
-    </form>
-
-    <div id="loginError" style="color: #f87171; font-size: 0.85rem; text-align: center; margin-top: 15px;"></div>
-  </div>
-
-  <!-- DASHBOARD SISWA -->
-  <div id="studentDashboard" class="glass-card wide" style="display: none;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <div>
-        <h2 id="dispName">Nama Siswa</h2>
-        <span id="dispMeta" style="font-size: 0.85rem; color: #9ca3af;">NIS: - | Kelas: -</span>
-      </div>
-      <button class="btn-logout" onclick="logout()">Keluar</button>
-    </div>
-
-    <!-- BADGE MEDALI SISWA -->
-    <div id="studentMedalCard" class="student-medal-card">
-      <div id="dispMedalIcon" class="medal-icon-large">🎗️</div>
-      <div class="medal-text">
-        <h4 id="dispMedalTitle">Peringkat Kelas</h4>
-        <p id="dispMedalDesc">Sedang memuat posisi peringkat...</p>
-      </div>
-    </div>
-
-    <!-- BOX NOTIFIKASI DARI GURU -->
-    <div id="notifCard" class="notif-box" style="display: none;">
-      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-        <span style="font-size: 1.1rem;">🔔</span>
-        <span style="font-size: 0.85rem; color: #34d399; font-weight: 700;">PESAN GURU</span>
-      </div>
-      <p id="dispNotifikasi" style="font-size: 0.95rem; color: #f3f4f6; line-height: 1.4;">-</p>
-    </div>
-
-    <!-- CAPAIAN TERAKHIR -->
-    <div style="background: rgba(255,255,255,0.04); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-      <span style="font-size: 0.75rem; color: #9ca3af;">📖 CAPAIAN TERAKHIR</span>
-      <p id="dispCapaian" style="font-size: 1.1rem; font-weight: 600; margin-top: 5px;">-</p>
-    </div>
-
-    <!-- GRID TARGET PTS & PAS -->
-    <div class="target-grid">
-      <!-- TARGET PTS -->
-      <div class="target-box">
-        <span style="font-size: 0.75rem; color: #9ca3af;">🎯 TARGET TENGAH SEMESTER (PTS)</span>
-        <p id="dispTargetPTS" style="font-size: 0.95rem; font-weight: 600; margin-top: 5px;">-</p>
-        <div class="progress-bar-bg">
-          <div id="barPTS" class="progress-bar-fill"></div>
+  <div class="container">
+    
+    <!-- 1. FORM LOGIN -->
+    <div id="loginSection" class="login-box">
+      <h2>TahfizhQu Login</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="inputNisn">NISN Siswa</label>
+          <input type="text" id="inputNisn" placeholder="Masukkan NISN" required>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-          <span id="badgePTS" class="badge badge-warning">Belum Tuntas</span>
-          <span id="percentPTS" style="font-size: 0.75rem; color: #9ca3af;">0%</span>
+        <div class="form-group">
+          <label for="inputPassword">Password</label>
+          <input type="password" id="inputPassword" placeholder="Masukkan Password" required>
+        </div>
+        <button type="submit" class="btn-login" id="btnLogin">Masuk</button>
+      </form>
+    </div>
+
+    <!-- 2. DASHBOARD SISWA -->
+    <div id="dashboardSection" class="dashboard">
+      
+      <!-- HEADER -->
+      <div class="header-user">
+        <div>
+          <div class="user-name" id="displayNama">-</div>
+          <div class="user-meta">NISN: <span id="displayNisn">-</span> | Kelas: <span id="displayKelas">-</span></div>
+        </div>
+        <button class="btn-logout" onclick="handleLogout()">Keluar</button>
+      </div>
+
+      <!-- PERINGKAT KELAS -->
+      <div class="card card-rank">
+        <div class="rank-icon">🎗️</div>
+        <div>
+          <div class="card-title">Peringkat Kelas</div>
+          <div class="card-sub" id="displayPeringkat">Mengambil peringkat...</div>
         </div>
       </div>
 
-      <!-- TARGET PAS -->
-      <div class="target-box">
-        <span style="font-size: 0.75rem; color: #9ca3af;">🏁 TARGET AKHIR SEMESTER (PAS)</span>
-        <p id="dispTargetPAS" style="font-size: 0.95rem; font-weight: 600; margin-top: 5px;">-</p>
-        <div class="progress-bar-bg">
-          <div id="barPAS" class="progress-bar-fill"></div>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-          <span id="badgePAS" class="badge badge-warning">Belum Tuntas</span>
-          <span id="percentPAS" style="font-size: 0.75rem; color: #9ca3af;">0%</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- DASHBOARD GURU & LEADERBOARD -->
-  <div id="adminDashboard" class="glass-card wide" style="display: none;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h2>🏆 Peringkat & Kirim Pesan Guru</h2>
-      <button class="btn-logout" onclick="logout()">Keluar</button>
-    </div>
-
-    <div class="admin-grid">
-      <!-- DAFTAR SISWA (LEADERBOARD) -->
-      <div>
-        <label style="font-size: 0.85rem; color: #9ca3af; display: block; margin-bottom: 8px;">🏆 Peringkat Hafalan Siswa (Terbanyak):</label>
-        <div class="student-list-box" id="studentList"></div>
+      <!-- PESAN GURU / NOTIFIKASI -->
+      <div class="card card-pesan">
+        <div class="pesan-header">🔔 PESAN GURU</div>
+        <div id="displayNotifikasi" style="font-size: 15px;">-</div>
       </div>
 
-      <!-- FORM DENGAN INFO PROGRES SISWA TERPILIH -->
-      <div class="edit-box">
-        <h3 id="selectedStudentTitle" style="font-size: 1rem; margin-bottom: 15px; color: #34d399;">← Pilih siswa untuk melihat detail & kirim pesan</h3>
+      <!-- CAPAIAN TERAKHIR -->
+      <div class="card">
+        <div class="card-sub" style="font-size: 12px; font-weight: bold; margin-bottom: 6px;">📖 CAPAIAN TERAKHIR</div>
+        <div class="card-title" id="displayCapaian" style="font-size: 18px;">-</div>
+      </div>
+
+      <!-- TARGET PTS & PAS -->
+      <div class="grid-target">
         
-        <form id="updateForm" style="display: none;">
-          <input type="hidden" id="editRowIndex">
-          
-          <!-- RANGKUMAN PROGRES SISWA -->
-          <div class="student-progress-summary">
-            <div style="font-size: 0.8rem; font-weight: bold; color: #34d399; margin-bottom: 8px;">📊 DETAIL CAPAIAN & PERINGKAT</div>
-            <div class="progress-metric">
-              <span>Posisi Peringkat:</span>
-              <strong id="adminDispRank">-</strong>
-            </div>
-            <div class="progress-metric">
-              <span>Capaian Saat Ini:</span>
-              <strong id="adminDispCapaian">-</strong>
-            </div>
-            <div class="progress-metric">
-              <span>Target PTS:</span>
-              <strong id="adminDispPTS">-</strong>
-            </div>
-            <div class="progress-metric">
-              <span>Target PAS:</span>
-              <strong id="adminDispPAS">-</strong>
-            </div>
+        <!-- TARGET PTS -->
+        <div class="card">
+          <div class="card-sub" style="font-size: 11px; font-weight: bold; margin-bottom: 4px;">🎯 TARGET TENGAH SEMESTER (PTS)</div>
+          <div class="card-title" id="displayPts" style="font-size: 15px;">-</div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="barPts"></div>
           </div>
-
-          <!-- INPUT PESAN / EVALUASI -->
-          <div class="form-group">
-            <label>Pesan / Catatan Evaluasi untuk Siswa</label>
-            <textarea id="editNotifikasi" rows="5" placeholder="Tulis ucapan selamat, catatan evaluasi, atau motivasi di sini..." required></textarea>
+          <div class="progress-info">
+            <span class="badge-tuntas">Belum Tuntas</span>
+            <span id="percentPts">0%</span>
           </div>
+        </div>
 
-          <button type="submit" class="btn" id="saveBtn">Kirim Pesan</button>
-          <div id="updateStatus" style="font-size: 0.85rem; text-align: center; margin-top: 10px;"></div>
-        </form>
+        <!-- TARGET PAS -->
+        <div class="card">
+          <div class="card-sub" style="font-size: 11px; font-weight: bold; margin-bottom: 4px;">🏁 TARGET AKHIR SEMESTER (PAS)</div>
+          <div class="card-title" id="displayPas" style="font-size: 15px;">-</div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="barPas"></div>
+          </div>
+          <div class="progress-info">
+            <span class="badge-tuntas">Belum Tuntas</span>
+            <span id="percentPas">0%</span>
+          </div>
+        </div>
+
       </div>
+
     </div>
+
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbztdTSvZBRrq9LmunK8IpJ7MD-lziclzOzZlOjo_oZCWhnxe92r0gWthAAzlz4vMMhP/exec"; 
+    // GANTI SAMA URL APPS SCRIPT WEB APP ANDA YANG SUDAH DI-DEPLOY RECENTLY
+    const API_URL = "https://script.google.com/macros/s/AKfycbwKQptiUggQnPMGfPVMHoqyonvnMers-Km.../exec";
 
-    let currentAdminPin = "";
-    let studentDataList = [];
+    const loginSection = document.getElementById("loginSection");
+    const dashboardSection = document.getElementById("dashboardSection");
+    const loginForm = document.getElementById("loginForm");
+    const btnLogin = document.getElementById("btnLogin");
 
-    function switchRole(role) {
-      document.getElementById('loginError').innerText = "";
-      if (role === 'student') {
-        document.getElementById('tabStudent').classList.add('active');
-        document.getElementById('tabAdmin').classList.remove('active');
-        document.getElementById('studentLoginForm').style.display = 'block';
-        document.getElementById('adminLoginForm').style.display = 'none';
-      } else {
-        document.getElementById('tabAdmin').classList.add('active');
-        document.getElementById('tabStudent').classList.remove('active');
-        document.getElementById('studentLoginForm').style.display = 'none';
-        document.getElementById('adminLoginForm').style.display = 'block';
-      }
-    }
+    // ==========================================
+    // 1. INSIALISASI SESI SAAT HALAMAN DI-REFRESH
+    // ==========================================
+    document.addEventListener("DOMContentLoaded", async () => {
+      const savedCredentials = localStorage.getItem("student_credentials");
 
-    // LOGIN SISWA
-    document.getElementById('studentLoginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const nisn = document.getElementById('nisn').value;
-      const pass = document.getElementById('studentPass').value;
-      
-      try {
-        const res = await fetch(`${SCRIPT_URL}?action=student_login&nisn=${encodeURIComponent(nisn)}&password=${encodeURIComponent(pass)}`);
-        const result = await res.json();
-        
-        if (result.status === 'success') {
-          showStudentDashboard(result.data);
-        } else {
-          document.getElementById('loginError').innerText = result.message || "NISN atau Password salah.";
+      if (savedCredentials) {
+        try {
+          const { nisn, password } = JSON.parse(savedCredentials);
+          
+          // Jika ada cache data sebelumnya, tampilkan dulu agar tidak flicker/loading lama
+          const cachedSession = localStorage.getItem("student_session");
+          if (cachedSession) {
+            renderDashboard(JSON.parse(cachedSession));
+          }
+
+          // Tetap lakukan fetch ulang ke Apps Script untuk sinkronisasi data terbaru
+          await fetchAndRefreshStudentData(nisn, password);
+
+        } catch (e) {
+          console.error("Gagal memulihkan sesi:", e);
+          handleLogout();
         }
-      } catch (err) {
-        document.getElementById('loginError').innerText = "Gagal terhubung ke server.";
+      } else {
+        showLoginView();
       }
     });
 
-    // LOGIN GURU
-    document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+    // ==========================================
+    // 2. LOGIKA SUBMIT LOGIN
+    // ==========================================
+    loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const pin = document.getElementById('adminPin').value;
-      
-      try {
-        const res = await fetch(`${SCRIPT_URL}?action=admin_login&pin=${encodeURIComponent(pin)}`);
-        const result = await res.json();
-        
-        if (result.status === 'success') {
-          currentAdminPin = pin;
-          showAdminDashboard();
-        } else {
-          document.getElementById('loginError').innerText = result.message || "PIN Guru salah.";
-        }
-      } catch (err) {
-        document.getElementById('loginError').innerText = "Gagal terhubung ke server.";
+      const nisn = document.getElementById("inputNisn").value.trim();
+      const password = document.getElementById("inputPassword").value.trim();
+
+      if (!nisn || !password) return alert("NISN dan Password wajib diisi!");
+
+      btnLogin.innerText = "Memproses...";
+      btnLogin.disabled = true;
+
+      const success = await fetchAndRefreshStudentData(nisn, password);
+
+      if (success) {
+        // Simpan kredensial login ke localStorage jika berhasil
+        localStorage.setItem("student_credentials", JSON.stringify({ nisn, password }));
+      } else {
+        alert("NISN atau Password Salah / Terjadi kesalahan koneksi.");
       }
+
+      btnLogin.innerText = "Masuk";
+      btnLogin.disabled = false;
     });
 
-    function parseHalaman(val) {
-      if (!val) return 0;
-      return parseFloat(String(val).replace(',', '.')) || 0;
-    }
+    // ==========================================
+    // 3. AMBIL DATA SISWA DARI API
+    // ==========================================
+    async function fetchAndRefreshStudentData(nisn, password) {
+      try {
+        const url = `${API_URL}?action=student_login&nisn=${encodeURIComponent(nisn)}&password=${encodeURIComponent(password)}`;
+        const response = await fetch(url);
+        
+        if (!response.ok) throw new Error("HTTP Status: " + response.status);
 
-    function updateProgress(badgeId, barId, percentId, currentVal, targetVal) {
-      const badge = document.getElementById(badgeId);
-      const bar = document.getElementById(barId);
-      const percent = document.getElementById(percentId);
+        const result = await response.json();
 
-      if (!targetVal || targetVal <= 0) {
-        bar.style.width = '0%';
-        percent.innerText = '0%';
-        badge.innerText = 'Belum Tuntas';
-        badge.className = 'badge badge-warning';
-        return;
-      }
-
-      let percentage = Math.min(Math.round((currentVal / targetVal) * 100), 100);
-      bar.style.width = percentage + '%';
-      percent.innerText = percentage + '%';
-
-      if (currentVal >= targetVal) {
-        badge.innerText = 'Tuntas';
-        badge.className = 'badge badge-success';
-      } else {
-        badge.innerText = 'Belum Tuntas';
-        badge.className = 'badge badge-warning';
+        if (result.status === "success") {
+          // Simpan snapshot sesi ke localStorage
+          localStorage.setItem("student_session", JSON.stringify(result.data));
+          renderDashboard(result.data);
+          return true;
+        } else {
+          return false;
+        }
+      } catch (err) {
+        console.error("Fetch Error:", err);
+        return false;
       }
     }
 
-    // DASHBOARD SISWA
-    async function showStudentDashboard(data) {
-      document.getElementById('loginCard').style.display = 'none';
-      document.getElementById('studentDashboard').style.display = 'block';
+    // ==========================================
+    // 4. TAMPILKAN DATA DI UI DASHBOARD
+    // ==========================================
+    function renderDashboard(student) {
+      loginSection.style.display = "none";
+      dashboardSection.style.display = "flex";
 
-      // Meta Data
-      document.getElementById('dispName').innerText = data.NAMA || "Siswa";
-      document.getElementById('dispMeta').innerText = `NISN: ${data.NISN || '-'} | Kelas: ${data.KELAS || '-'}`;
+      document.getElementById("displayNama").innerText = student.NAMA || "-";
+      document.getElementById("displayNisn").innerText = student.NISN || "-";
+      document.getElementById("displayKelas").innerText = student.KELAS || "-";
 
-      // Notifikasi Guru
-      const notifCard = document.getElementById('notifCard');
-      const pesanNotif = data.NOTIFIKASI || data.PESAN_GURU || data.MOTIVASI_GURU;
-      if (pesanNotif && pesanNotif.trim() !== "") {
-        document.getElementById('dispNotifikasi').innerText = pesanNotif.trim();
-        notifCard.style.display = 'block';
+      // Peringkat
+      if (student.PERINGKAT_KELAS && student.PERINGKAT_KELAS !== "-") {
+        document.getElementById("displayPeringkat").innerText = `Peringkat ${student.PERINGKAT_KELAS} dari ${student.TOTAL_SISWA_KELAS} Siswa`;
       } else {
-        notifCard.style.display = 'none';
+        document.getElementById("displayPeringkat").innerText = "Peringkat belum tersedia";
       }
+
+      // Pesan Guru
+      document.getElementById("displayNotifikasi").innerText = student.NOTIFIKASI || "Belum ada pesan dari guru.";
 
       // Capaian Terakhir
-      const capaianSurat = data.CAPAIAN_TERAKHIR_SURAT || '-';
-      const capaianHlm = parseHalaman(data.CAPAIAN_TERAKHIR_HALAMAN);
-      document.getElementById('dispCapaian').innerText = `${capaianSurat} (${capaianHlm} Halaman)`;
+      const cSurat = student.CAPAIAN_TERAKHIR_SURAT || "-";
+      const cHalaman = student.CAPAIAN_TERAKHIR_HALAMAN || "0";
+      document.getElementById("displayCapaian").innerText = `${cSurat} (${cHalaman} Halaman)`;
 
       // Target PTS
-      const targetPtsSurah = data.PTS_SURAT || "-";
-      const targetPtsHlm = parseHalaman(data.PTS_HALAMAN);
-      document.getElementById('dispTargetPTS').innerText = `${targetPtsSurah} (${targetPtsHlm} Halaman)`;
-      updateProgress('badgePTS', 'barPTS', 'percentPTS', capaianHlm, targetPtsHlm);
+      const ptsSurat = student.PTS_SURAT || "-";
+      const ptsHal = parseFloat(student.PTS_HALAMAN) || 0;
+      document.getElementById("displayPts").innerText = `${ptsSurat}: (${ptsHal} Halaman)`;
 
       // Target PAS
-      const targetPasSurah = data.PAS_SURAT || "-";
-      const targetPasHlm = parseHalaman(data.PAS_HALAMAN);
-      document.getElementById('dispTargetPAS').innerText = `${targetPasSurah} (${targetPasHlm} Halaman)`;
-      updateProgress('badgePAS', 'barPAS', 'percentPAS', capaianHlm, targetPasHlm);
+      const pasSurat = student.PAS_SURAT || "-";
+      const pasHal = parseFloat(student.PAS_HALAMAN) || 0;
+      document.getElementById("displayPas").innerText = `${pasSurat}: (${pasHal} Halaman)`;
 
-      // HITUNG PERINGKAT DAN AKAN MENAMPILKAN NOMOR PERINGKAT KEBerapa PUN ITU (TERMASUK PERINGKAT TERAKHIR)
-      await fetchAndCalculateStudentRank(data.NISN);
+      // Persentase Progres sederhahana (Berdasarkan Target PAS)
+      const currentHal = parseFloat(cHalaman) || 0;
+      let pctPts = ptsHal > 0 ? Math.min(Math.round((currentHal / ptsHal) * 100), 100) : 0;
+      let pctPas = pasHal > 0 ? Math.min(Math.round((currentHal / pasHal) * 100), 100) : 0;
+
+      document.getElementById("barPts").style.width = pctPts + "%";
+      document.getElementById("percentPts").innerText = pctPts + "%";
+
+      document.getElementById("barPas").style.width = pctPas + "%";
+      document.getElementById("percentPas").innerText = pctPas + "%";
     }
 
-    // FUNGSI HITUNG PERINGKAT
-    async function fetchAndCalculateStudentRank(studentNisn) {
-      const card = document.getElementById('studentMedalCard');
-      const icon = document.getElementById('dispMedalIcon');
-      const title = document.getElementById('dispMedalTitle');
-      const desc = document.getElementById('dispMedalDesc');
+    // ==========================================
+    // 5. PROSES LOGOUT
+    // ==========================================
+    function handleLogout() {
+      // Hapus data dari Local Storage
+      localStorage.removeItem("student_session");
+      localStorage.removeItem("student_credentials");
 
-      try {
-        const res = await fetch(`${SCRIPT_URL}?action=get_rank_list`);
-        const result = await res.json();
-
-        if (result.status === 'success' && result.data) {
-          let allStudents = result.data;
-          
-          // Urutkan siswa berdasarkan capaian halaman terbanyak
-          allStudents.sort((a, b) => parseHalaman(b.CAPAIAN_TERAKHIR_HALAMAN) - parseHalaman(a.CAPAIAN_TERAKHIR_HALAMAN));
-          
-          // Cari urutan posisi siswa ini (dengan konversi String agar pasti cocok)
-          const rankIndex = allStudents.findIndex(s => String(s.NISN).trim() === String(studentNisn).trim());
-          const rank = rankIndex !== -1 ? rankIndex + 1 : 0;
-          const totalSiswa = allStudents.length;
-
-          card.className = 'student-medal-card';
-          if (rank === 1) {
-            card.classList.add('gold');
-            icon.innerText = '🥇';
-            title.innerText = 'Medali Emas';
-            desc.innerText = `Luar biasa! Kamu Peringkat 1 dari ${totalSiswa} siswa di kelas.`;
-          } else if (rank === 2) {
-            card.classList.add('silver');
-            icon.innerText = '🥈';
-            title.innerText = 'Medali Perak';
-            desc.innerText = `Hebat! Kamu Peringkat 2 dari ${totalSiswa} siswa di kelas.`;
-          } else if (rank === 3) {
-            card.classList.add('bronze');
-            icon.innerText = '🥉';
-            title.innerText = 'Medali Perunggu';
-            desc.innerText = `Bagus sekali! Kamu Peringkat 3 dari ${totalSiswa} siswa di kelas.`;
-          } else if (rank > 3 && rank <= 10) {
-            card.classList.add('top10');
-            icon.innerText = '🎖️';
-            title.innerText = `Top 10 Kelas (#${rank})`;
-            desc.innerText = `Kerja bagus! Kamu berhasil masuk 10 besar (${rank} dari ${totalSiswa} siswa).`;
-          } else if (rank > 10) {
-            icon.innerText = '🎗️';
-            title.innerText = `Peringkat #${rank}`;
-            desc.innerText = `Kamu berada di peringkat #${rank} dari ${totalSiswa} siswa. Tetap semangat dan tingkatkan hafalanmu!`;
-          } else {
-            icon.innerText = '⚠️';
-            title.innerText = 'Data Tidak Cocok';
-            desc.innerText = `NISN (${studentNisn}) tidak ditemukan dalam daftar peringkat kelas.`;
-          }
-        } else {
-          desc.innerText = 'Gagal memuat daftar peringkat dari server.';
-        }
-      } catch (err) {
-        desc.innerText = 'Terjadi kesalahan koneksi saat mengambil peringkat.';
-      }
+      // Tampilkan kembali form login
+      showLoginView();
     }
 
-    // DASHBOARD GURU
-    async function showAdminDashboard() {
-      document.getElementById('loginCard').style.display = 'none';
-      document.getElementById('adminDashboard').style.display = 'block';
-
-      try {
-        const res = await fetch(`${SCRIPT_URL}?action=get_all_students&pin=${encodeURIComponent(currentAdminPin)}`);
-        const result = await res.json();
-
-        if (result.status === 'success') {
-          studentDataList = result.data;
-
-          // URUTKAN DAFTAR SISWA BERDASARKAN HALAMAN CAPAIAN TERBANYAK
-          studentDataList.sort((a, b) => {
-            return parseHalaman(b.CAPAIAN_TERAKHIR_HALAMAN) - parseHalaman(a.CAPAIAN_TERAKHIR_HALAMAN);
-          });
-
-          renderStudentList();
-        } else {
-          alert("Gagal memuat data siswa: " + result.message);
-        }
-      } catch (err) {
-        alert("Gagal memuat daftar siswa. Periksa jaringan Anda.");
-      }
-    }
-
-    function renderStudentList() {
-      const listContainer = document.getElementById('studentList');
-      listContainer.innerHTML = "";
-
-      if (!studentDataList || studentDataList.length === 0) {
-        listContainer.innerHTML = "<p style='color:#9ca3af; font-size:0.85rem; text-align:center;'>Tidak ada data siswa.</p>";
-        return;
-      }
-
-      studentDataList.forEach((s, idx) => {
-        const item = document.createElement('div');
-        item.className = "student-item";
-        item.id = `student-item-${idx}`;
-
-        const rank = idx + 1;
-        const hlmCurrent = parseHalaman(s.CAPAIAN_TERAKHIR_HALAMAN);
-
-        // BADGE PERINGKAT MEDALI GURU
-        let rankBadgeClass = "rank-other";
-        let rankText = `#${rank}`;
-
-        if (rank === 1) { rankBadgeClass = "rank-1"; rankText = "🥇"; }
-        else if (rank === 2) { rankBadgeClass = "rank-2"; rankText = "🥈"; }
-        else if (rank === 3) { rankBadgeClass = "rank-3"; rankText = "🥉"; }
-
-        item.innerHTML = `
-          <div style="display:flex; align-items:center;">
-            <div class="rank-badge ${rankBadgeClass}">${rankText}</div>
-            <div>
-              <strong>${s.NAMA}</strong><br>
-              <small style="color:#9ca3af;">${hlmCurrent} Halaman | ${s.CAPAIAN_TERAKHIR_SURAT || '-'}</small>
-            </div>
-          </div>
-          <span style="font-size:0.75rem; color:#a855f7; font-weight:bold;">PILIH ›</span>
-        `;
-        item.onclick = () => selectStudentForEdit(idx);
-        listContainer.appendChild(item);
-      });
-    }
-
-    function selectStudentForEdit(index) {
-      document.querySelectorAll('.student-item').forEach(el => el.classList.remove('selected'));
-      document.getElementById(`student-item-${index}`).classList.add('selected');
-
-      const s = studentDataList[index];
-      const rank = index + 1;
-      const currentHlm = parseHalaman(s.CAPAIAN_TERAKHIR_HALAMAN);
-      const ptsHlm = parseHalaman(s.PTS_HALAMAN);
-      const pasHlm = parseHalaman(s.PAS_HALAMAN);
-
-      document.getElementById('selectedStudentTitle').innerText = `Progres & Pesan untuk: ${s.NAMA}`;
-      document.getElementById('adminDispRank').innerText = `#${rank} dari ${studentDataList.length} Siswa`;
-      document.getElementById('adminDispCapaian').innerText = `${s.CAPAIAN_TERAKHIR_SURAT || '-'} (${currentHlm} Halaman)`;
-      document.getElementById('adminDispPTS').innerText = `${s.PTS_SURAT || '-'} (${ptsHlm} Hlm)`;
-      document.getElementById('adminDispPAS').innerText = `${s.PAS_SURAT || '-'} (${pasHlm} Hlm)`;
-
-      document.getElementById('editRowIndex').value = s.ROW_INDEX;
-      document.getElementById('editNotifikasi').value = s.NOTIFIKASI || s.PESAN_GURU || s.MOTIVASI_GURU || "";
-      document.getElementById('updateForm').style.display = 'block';
-    }
-
-    // SIMPAN / KIRIM NOTIFIKASI
-    document.getElementById('updateForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const saveBtn = document.getElementById('saveBtn');
-      const updateStatus = document.getElementById('updateStatus');
-
-      saveBtn.disabled = true;
-      saveBtn.innerText = "Mengirim...";
-      updateStatus.innerText = "";
-
-      const payload = {
-        action: "update_notif",
-        pin: currentAdminPin,
-        rowIndex: document.getElementById('editRowIndex').value,
-        notifikasi: document.getElementById('editNotifikasi').value
-      };
-
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
-        });
-        const result = await res.json();
-
-        if (result.status === 'success') {
-          updateStatus.style.color = "#4ade80";
-          updateStatus.innerText = "✓ Notifikasi berhasil dikirim!";
-          
-          const rIndex = document.getElementById('editRowIndex').value;
-          const studentObj = studentDataList.find(s => s.ROW_INDEX == rIndex);
-          if (studentObj) {
-            studentObj.NOTIFIKASI = payload.notifikasi;
-          }
-        } else {
-          updateStatus.style.color = "#f87171";
-          updateStatus.innerText = result.message || "Gagal mengirim notifikasi.";
-        }
-      } catch (err) {
-        updateStatus.style.color = "#f87171";
-        updateStatus.innerText = "Gagal menyimpan data. Pastikan koneksi aman.";
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.innerText = "Kirim Pesan";
-      }
-    });
-
-    function logout() {
-      location.reload();
+    function showLoginView() {
+      loginSection.style.display = "block";
+      dashboardSection.style.display = "none";
+      loginForm.reset();
     }
   </script>
 </body>
