@@ -180,6 +180,58 @@
     .rank-3 { background: linear-gradient(135deg, #fdba74, #d97706); color: #451a03; box-shadow: 0 0 10px rgba(217, 119, 6, 0.5); }
     .rank-other { background: rgba(255, 255, 255, 0.1); color: #9ca3af; font-size: 0.8rem; }
 
+    /* Card Badge Medali Siswa (Fitur Baru) */
+    .student-medal-card {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .student-medal-card.gold {
+      background: linear-gradient(135deg, rgba(255, 224, 102, 0.15), rgba(245, 158, 11, 0.15));
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    .student-medal-card.silver {
+      background: linear-gradient(135deg, rgba(226, 232, 240, 0.15), rgba(148, 163, 184, 0.15));
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .student-medal-card.bronze {
+      background: linear-gradient(135deg, rgba(253, 186, 116, 0.15), rgba(217, 119, 6, 0.15));
+      border: 1px solid rgba(217, 119, 6, 0.4);
+    }
+
+    .student-medal-card.top10 {
+      background: linear-gradient(135deg, rgba(52, 211, 153, 0.15), rgba(16, 185, 129, 0.15));
+      border: 1px solid rgba(52, 211, 153, 0.4);
+    }
+
+    .medal-icon-large {
+      font-size: 2.5rem;
+      margin-right: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .medal-text h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #f3f4f6;
+    }
+
+    .medal-text p {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
     /* Layout Panel Guru */
     .admin-grid {
       display: grid;
@@ -294,6 +346,15 @@
         <span id="dispMeta" style="font-size: 0.85rem; color: #9ca3af;">NIS: - | Kelas: -</span>
       </div>
       <button class="btn-logout" onclick="logout()">Keluar</button>
+    </div>
+
+    <!-- BADGE MEDALI SISWA (FITUR BARU) -->
+    <div id="studentMedalCard" class="student-medal-card">
+      <div id="dispMedalIcon" class="medal-icon-large">🎗️</div>
+      <div class="medal-text">
+        <h4 id="dispMedalTitle">Peringkat Kelas</h4>
+        <p id="dispMedalDesc">Sedang memuat posisi peringkat...</p>
+      </div>
     </div>
 
     <!-- BOX NOTIFIKASI DARI GURU -->
@@ -489,7 +550,7 @@
     }
 
     // DASHBOARD SISWA
-    function showStudentDashboard(data) {
+    async function showStudentDashboard(data) {
       document.getElementById('loginCard').style.display = 'none';
       document.getElementById('studentDashboard').style.display = 'block';
 
@@ -523,6 +584,70 @@
       const targetPasHlm = parseHalaman(data.PAS_HALAMAN);
       document.getElementById('dispTargetPAS').innerText = `${targetPasSurah} (${targetPasHlm} Halaman)`;
       updateProgress('badgePAS', 'barPAS', 'percentPAS', capaianHlm, targetPasHlm);
+
+      // FITUR BARU: KRITERIA BADGE MEDALI & HITUNG PERINGKAT SISWA
+      await fetchAndCalculateStudentRank(data.NISN);
+    }
+
+    // FUNGSI HITUNG PERINGKAT DAN TAMPILKAN BADGE SISWA
+    async function fetchAndCalculateStudentRank(studentNisn) {
+      const card = document.getElementById('studentMedalCard');
+      const icon = document.getElementById('dispMedalIcon');
+      const title = document.getElementById('dispMedalTitle');
+      const desc = document.getElementById('dispMedalDesc');
+
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=get_rank_list`);
+        const result = await res.json();
+
+        if (result.status === 'success' && result.data) {
+          let allStudents = result.data;
+          
+          // Urutkan siswa berdasarkan capaian halaman terbanyak
+          allStudents.sort((a, b) => parseHalaman(b.CAPAIAN_TERAKHIR_HALAMAN) - parseHalaman(a.CAPAIAN_TERAKHIR_HALAMAN));
+          
+          // Cari urutan posisi siswa ini
+          const rankIndex = allStudents.findIndex(s => String(s.NISN) === String(studentNisn));
+          const rank = rankIndex !== -1 ? rankIndex + 1 : 0;
+          const totalSiswa = allStudents.length;
+
+          // Terapkan Medali berdasarkan Peringkat
+          card.className = 'student-medal-card';
+          if (rank === 1) {
+            card.classList.add('gold');
+            icon.innerText = '🥇';
+            title.innerText = 'Medali Emas';
+            desc.innerText = `Luar biasa! Kamu Peringkat 1 dari ${totalSiswa} siswa di kelas.`;
+          } else if (rank === 2) {
+            card.classList.add('silver');
+            icon.innerText = '🥈';
+            title.innerText = 'Medali Perak';
+            desc.innerText = `Hebat! Kamu Peringkat 2 dari ${totalSiswa} siswa di kelas.`;
+          } else if (rank === 3) {
+            card.classList.add('bronze');
+            icon.innerText = '🥉';
+            title.innerText = 'Medali Perunggu';
+            desc.innerText = `Bagus sekali! Kamu Peringkat 3 dari ${totalSiswa} siswa di kelas.`;
+          } else if (rank > 3 && rank <= 10) {
+            card.classList.add('top10');
+            icon.innerText = '🎖️';
+            title.innerText = `Top 10 Kelas (#${rank})`;
+            desc.innerText = `Kerja bagus! Kamu berhasil masuk 10 besar (${rank} dari ${totalSiswa} siswa).`;
+          } else if (rank > 10) {
+            icon.innerText = '🎗️';
+            title.innerText = `Peringkat #${rank}`;
+            desc.innerText = `Kamu berada di peringkat #${rank} dari ${totalSiswa} siswa. Tingkatkan terus hafalanmu!`;
+          } else {
+            icon.innerText = '🎗️';
+            title.innerText = 'Peringkat Kelas';
+            desc.innerText = 'Data peringkat tidak ditemukan.';
+          }
+        } else {
+          desc.innerText = 'Belum dapat memuat data peringkat saat ini.';
+        }
+      } catch (err) {
+        desc.innerText = 'Peringkat kamu belum dapat ditampilkan.';
+      }
     }
 
     // DASHBOARD GURU
