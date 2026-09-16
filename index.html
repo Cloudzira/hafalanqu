@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hafalan Al Quran XA</title>
+  <title>Tahfizhqu</title>
   <style>
     * {
       margin: 0;
@@ -315,14 +315,14 @@
     <form id="studentLoginForm">
       <h2 class="title">Login Siswa</h2>
       <div class="form-group">
-        <label>NISN Siswa</label>
-        <input type="text" id="nisn" placeholder="Masukkan NISN" required>
+        <label>NIS Siswa</label>
+        <input type="text" id="nisn" placeholder="Masukkan NIS" required>
       </div>
       <div class="form-group">
         <label>Password</label>
         <input type="password" id="studentPass" placeholder="Masukkan Password" required>
       </div>
-      <button type="submit" class="btn">Masuk Portal Siswa</button>
+      <button type="submit" class="btn">Masuk</button>
     </form>
 
     <!-- FORM LOGIN GURU -->
@@ -405,7 +405,7 @@
   <!-- DASHBOARD GURU & LEADERBOARD -->
   <div id="adminDashboard" class="glass-card wide" style="display: none;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h2>🏆 Peringkat & Kirim Pesan Guru</h2>
+      <h2>DASHBOARD GURU</h2>
       <button class="btn-logout" onclick="logout()">Keluar</button>
     </div>
 
@@ -418,14 +418,14 @@
 
       <!-- FORM DENGAN INFO PROGRES SISWA TERPILIH -->
       <div class="edit-box">
-        <h3 id="selectedStudentTitle" style="font-size: 1rem; margin-bottom: 15px; color: #34d399;">← Pilih siswa untuk melihat detail & kirim pesan</h3>
+        <h3 id="selectedStudentTitle" style="font-size: 1rem; margin-bottom: 15px; color: #34d399;">← Pilih siswa</h3>
         
         <form id="updateForm" style="display: none;">
           <input type="hidden" id="editRowIndex">
           
           <!-- RANGKUMAN PROGRES SISWA -->
           <div class="student-progress-summary">
-            <div style="font-size: 0.8rem; font-weight: bold; color: #34d399; margin-bottom: 8px;">📊 DETAIL CAPAIAN & PERINGKAT</div>
+            <div style="font-size: 0.8rem; font-weight: bold; color: #34d399; margin-bottom: 8px;">📊 CAPAIAN & PERINGKAT</div>
             <div class="progress-metric">
               <span>Posisi Peringkat:</span>
               <strong id="adminDispRank">-</strong>
@@ -446,7 +446,7 @@
 
           <!-- INPUT PESAN / EVALUASI -->
           <div class="form-group">
-            <label>Pesan / Catatan Evaluasi untuk Siswa</label>
+            <label>Pesan / Catatan untuk Siswa</label>
             <textarea id="editNotifikasi" rows="5" placeholder="Tulis ucapan selamat, catatan evaluasi, atau motivasi di sini..." required></textarea>
           </div>
 
