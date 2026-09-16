@@ -162,7 +162,7 @@
     .badge-success { background: rgba(52, 211, 153, 0.2); color: #34d399; }
     .badge-warning { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
 
-    /* Badge Peringkat (Medali) */
+    /* Badge Peringkat (Medali Guru) */
     .rank-badge {
       display: inline-flex;
       align-items: center;
@@ -180,7 +180,7 @@
     .rank-3 { background: linear-gradient(135deg, #fdba74, #d97706); color: #451a03; box-shadow: 0 0 10px rgba(217, 119, 6, 0.5); }
     .rank-other { background: rgba(255, 255, 255, 0.1); color: #9ca3af; font-size: 0.8rem; }
 
-    /* Card Badge Medali Siswa (Fitur Baru) */
+    /* Card Badge Medali Siswa */
     .student-medal-card {
       display: flex;
       align-items: center;
@@ -348,7 +348,7 @@
       <button class="btn-logout" onclick="logout()">Keluar</button>
     </div>
 
-    <!-- BADGE MEDALI SISWA (FITUR BARU) -->
+    <!-- BADGE MEDALI SISWA -->
     <div id="studentMedalCard" class="student-medal-card">
       <div id="dispMedalIcon" class="medal-icon-large">🎗️</div>
       <div class="medal-text">
@@ -585,11 +585,11 @@
       document.getElementById('dispTargetPAS').innerText = `${targetPasSurah} (${targetPasHlm} Halaman)`;
       updateProgress('badgePAS', 'barPAS', 'percentPAS', capaianHlm, targetPasHlm);
 
-      // FITUR BARU: KRITERIA BADGE MEDALI & HITUNG PERINGKAT SISWA
+      // HITUNG PERINGKAT DAN AKAN MENAMPILKAN NOMOR PERINGKAT KEBerapa PUN ITU (TERMASUK PERINGKAT TERAKHIR)
       await fetchAndCalculateStudentRank(data.NISN);
     }
 
-    // FUNGSI HITUNG PERINGKAT DAN TAMPILKAN BADGE SISWA
+    // FUNGSI HITUNG PERINGKAT
     async function fetchAndCalculateStudentRank(studentNisn) {
       const card = document.getElementById('studentMedalCard');
       const icon = document.getElementById('dispMedalIcon');
@@ -606,12 +606,11 @@
           // Urutkan siswa berdasarkan capaian halaman terbanyak
           allStudents.sort((a, b) => parseHalaman(b.CAPAIAN_TERAKHIR_HALAMAN) - parseHalaman(a.CAPAIAN_TERAKHIR_HALAMAN));
           
-          // Cari urutan posisi siswa ini
-          const rankIndex = allStudents.findIndex(s => String(s.NISN) === String(studentNisn));
+          // Cari urutan posisi siswa ini (dengan konversi String agar pasti cocok)
+          const rankIndex = allStudents.findIndex(s => String(s.NISN).trim() === String(studentNisn).trim());
           const rank = rankIndex !== -1 ? rankIndex + 1 : 0;
           const totalSiswa = allStudents.length;
 
-          // Terapkan Medali berdasarkan Peringkat
           card.className = 'student-medal-card';
           if (rank === 1) {
             card.classList.add('gold');
@@ -636,17 +635,17 @@
           } else if (rank > 10) {
             icon.innerText = '🎗️';
             title.innerText = `Peringkat #${rank}`;
-            desc.innerText = `Kamu berada di peringkat #${rank} dari ${totalSiswa} siswa. Tingkatkan terus hafalanmu!`;
+            desc.innerText = `Kamu berada di peringkat #${rank} dari ${totalSiswa} siswa. Tetap semangat dan tingkatkan hafalanmu!`;
           } else {
-            icon.innerText = '🎗️';
-            title.innerText = 'Peringkat Kelas';
-            desc.innerText = 'Data peringkat tidak ditemukan.';
+            icon.innerText = '⚠️';
+            title.innerText = 'Data Tidak Cocok';
+            desc.innerText = `NISN (${studentNisn}) tidak ditemukan dalam daftar peringkat kelas.`;
           }
         } else {
-          desc.innerText = 'Belum dapat memuat data peringkat saat ini.';
+          desc.innerText = 'Gagal memuat daftar peringkat dari server.';
         }
       } catch (err) {
-        desc.innerText = 'Peringkat kamu belum dapat ditampilkan.';
+        desc.innerText = 'Terjadi kesalahan koneksi saat mengambil peringkat.';
       }
     }
 
@@ -693,7 +692,7 @@
         const rank = idx + 1;
         const hlmCurrent = parseHalaman(s.CAPAIAN_TERAKHIR_HALAMAN);
 
-        // BADGE PERINGKAT MEDALI
+        // BADGE PERINGKAT MEDALI GURU
         let rankBadgeClass = "rank-other";
         let rankText = `#${rank}`;
 
