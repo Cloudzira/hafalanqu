@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Hafalan & Panel Notifikasi Guru</title>
+  <title>Hafalan Al Quran XA</title>
   <style>
     * {
       margin: 0;
@@ -256,7 +256,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
       <div>
         <h2 id="dispName">Nama Siswa</h2>
-        <span id="dispMeta" style="font-size: 0.85rem; color: #9ca3af;">NISN: - | Kelas: -</span>
+        <span id="dispMeta" style="font-size: 0.85rem; color: #9ca3af;">NIS: - | Kelas: -</span>
       </div>
       <button class="btn-logout" onclick="logout()">Keluar</button>
     </div>
@@ -265,7 +265,7 @@
     <div id="notifCard" class="notif-box" style="display: none;">
       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
         <span style="font-size: 1.1rem;">🔔</span>
-        <span style="font-size: 0.85rem; color: #34d399; font-weight: 700;">NOTIFIKASI DARI GURU</span>
+        <span style="font-size: 0.85rem; color: #34d399; font-weight: 700;">PESAN GURU</span>
       </div>
       <p id="dispNotifikasi" style="font-size: 0.95rem; color: #f3f4f6; line-height: 1.4;">-</p>
     </div>
@@ -309,7 +309,7 @@
   <!-- DASHBOARD GURU -->
   <div id="adminDashboard" class="glass-card wide" style="display: none;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h2>Panel Kirim Notifikasi Siswa</h2>
+      <h2>Panel Kirim Pesan</h2>
       <button class="btn-logout" onclick="logout()">Keluar</button>
     </div>
 
@@ -320,16 +320,16 @@
       </div>
 
       <div class="edit-box">
-        <h3 id="selectedStudentTitle" style="font-size: 1rem; margin-bottom: 15px; color: #34d399;">← Pilih siswa di samping</h3>
+        <h3 id="selectedStudentTitle" style="font-size: 1rem; margin-bottom: 15px; color: #34d399;">← Pilih siswa</h3>
         <form id="updateForm" style="display: none;">
           <input type="hidden" id="editRowIndex">
           
           <div class="form-group">
-            <label>Pesan Notifikasi untuk Siswa</label>
+            <label>Pesan untuk Siswa</label>
             <textarea id="editNotifikasi" rows="5" placeholder="Tulis pesan, evaluasi hafalan, atau pengumuman khusus siswa ini di sini..." required></textarea>
           </div>
 
-          <button type="submit" class="btn" id="saveBtn">Kirim Notifikasi</button>
+          <button type="submit" class="btn" id="saveBtn">Kirim Pesan</button>
           <div id="updateStatus" style="font-size: 0.85rem; text-align: center; margin-top: 10px;"></div>
         </form>
       </div>
