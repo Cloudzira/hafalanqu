@@ -157,11 +157,28 @@
       border-radius: 6px;
       font-size: 0.75rem;
       font-weight: 600;
-      margin-top: 8px;
     }
 
     .badge-success { background: rgba(52, 211, 153, 0.2); color: #34d399; }
     .badge-warning { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+
+    /* Badge Peringkat (Medali) */
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+    .rank-1 { background: linear-gradient(135deg, #ffe066, #f59e0b); color: #451a03; box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
+    .rank-2 { background: linear-gradient(135deg, #e2e8f0, #94a3b8); color: #0f172a; box-shadow: 0 0 10px rgba(148, 163, 184, 0.5); }
+    .rank-3 { background: linear-gradient(135deg, #fdba74, #d97706); color: #451a03; box-shadow: 0 0 10px rgba(217, 119, 6, 0.5); }
+    .rank-other { background: rgba(255, 255, 255, 0.1); color: #9ca3af; font-size: 0.8rem; }
 
     /* Layout Panel Guru */
     .admin-grid {
@@ -176,7 +193,7 @@
     }
 
     .student-list-box {
-      max-height: 420px;
+      max-height: 440px;
       overflow-y: auto;
       background: rgba(0, 0, 0, 0.2);
       border-radius: 12px;
@@ -186,13 +203,13 @@
     .student-item {
       padding: 12px;
       background: rgba(255, 255, 255, 0.04);
-      border-radius: 8px;
+      border-radius: 10px;
       margin-bottom: 8px;
       cursor: pointer;
       transition: all 0.2s;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
     }
 
     .student-item:hover, .student-item.selected {
@@ -207,7 +224,6 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    /* Card Progres Hafalan dalam Edit Box Guru */
     .student-progress-summary {
       background: rgba(0, 0, 0, 0.25);
       border-radius: 10px;
@@ -224,7 +240,6 @@
       color: #cbd5e1;
     }
 
-    /* Notifikasi Box Siswa */
     .notif-box {
       background: rgba(52, 211, 153, 0.08);
       border: 1px solid rgba(52, 211, 153, 0.3);
@@ -326,30 +341,34 @@
     </div>
   </div>
 
-  <!-- DASHBOARD GURU -->
+  <!-- DASHBOARD GURU & LEADERBOARD -->
   <div id="adminDashboard" class="glass-card wide" style="display: none;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h2>Pemantauan Progres & Kirim Pesan</h2>
+      <h2>🏆 Peringkat & Kirim Pesan Guru</h2>
       <button class="btn-logout" onclick="logout()">Keluar</button>
     </div>
 
     <div class="admin-grid">
-      <!-- DAFTAR SISWA -->
+      <!-- DAFTAR SISWA (LEADERBOARD) -->
       <div>
-        <label style="font-size: 0.85rem; color: #9ca3af; display: block; margin-bottom: 8px;">Daftar Siswa:</label>
+        <label style="font-size: 0.85rem; color: #9ca3af; display: block; margin-bottom: 8px;">🏆 Peringkat Hafalan Siswa (Terbanyak):</label>
         <div class="student-list-box" id="studentList"></div>
       </div>
 
       <!-- FORM DENGAN INFO PROGRES SISWA TERPILIH -->
       <div class="edit-box">
-        <h3 id="selectedStudentTitle" style="font-size: 1rem; margin-bottom: 15px; color: #34d399;">← Pilih siswa untuk melihat detail</h3>
+        <h3 id="selectedStudentTitle" style="font-size: 1rem; margin-bottom: 15px; color: #34d399;">← Pilih siswa untuk melihat detail & kirim pesan</h3>
         
         <form id="updateForm" style="display: none;">
           <input type="hidden" id="editRowIndex">
           
           <!-- RANGKUMAN PROGRES SISWA -->
           <div class="student-progress-summary">
-            <div style="font-size: 0.8rem; font-weight: bold; color: #34d399; margin-bottom: 8px;">📊 DETAIL CAPAIAN HAFALAN</div>
+            <div style="font-size: 0.8rem; font-weight: bold; color: #34d399; margin-bottom: 8px;">📊 DETAIL CAPAIAN & PERINGKAT</div>
+            <div class="progress-metric">
+              <span>Posisi Peringkat:</span>
+              <strong id="adminDispRank">-</strong>
+            </div>
             <div class="progress-metric">
               <span>Capaian Saat Ini:</span>
               <strong id="adminDispCapaian">-</strong>
@@ -367,7 +386,7 @@
           <!-- INPUT PESAN / EVALUASI -->
           <div class="form-group">
             <label>Pesan / Catatan Evaluasi untuk Siswa</label>
-            <textarea id="editNotifikasi" rows="5" placeholder="Tulis catatan evaluasi hafalan atau pesan motivasi di sini..." required></textarea>
+            <textarea id="editNotifikasi" rows="5" placeholder="Tulis ucapan selamat, catatan evaluasi, atau motivasi di sini..." required></textarea>
           </div>
 
           <button type="submit" class="btn" id="saveBtn">Kirim Pesan</button>
@@ -517,6 +536,12 @@
 
         if (result.status === 'success') {
           studentDataList = result.data;
+
+          // URUTKAN DAFTAR SISWA BERDASARKAN HALAMAN CAPAIAN TERBANYAK
+          studentDataList.sort((a, b) => {
+            return parseHalaman(b.CAPAIAN_TERAKHIR_HALAMAN) - parseHalaman(a.CAPAIAN_TERAKHIR_HALAMAN);
+          });
+
           renderStudentList();
         } else {
           alert("Gagal memuat data siswa: " + result.message);
@@ -539,17 +564,27 @@
         const item = document.createElement('div');
         item.className = "student-item";
         item.id = `student-item-${idx}`;
-        
+
+        const rank = idx + 1;
         const hlmCurrent = parseHalaman(s.CAPAIAN_TERAKHIR_HALAMAN);
-        const hlmPas = parseHalaman(s.PAS_HALAMAN);
-        const pct = hlmPas > 0 ? Math.min(Math.round((hlmCurrent / hlmPas) * 100), 100) : 0;
+
+        // BADGE PERINGKAT MEDALI
+        let rankBadgeClass = "rank-other";
+        let rankText = `#${rank}`;
+
+        if (rank === 1) { rankBadgeClass = "rank-1"; rankText = "🥇"; }
+        else if (rank === 2) { rankBadgeClass = "rank-2"; rankText = "🥈"; }
+        else if (rank === 3) { rankBadgeClass = "rank-3"; rankText = "🥉"; }
 
         item.innerHTML = `
-          <div>
-            <strong>${s.NAMA}</strong><br>
-            <small style="color:#9ca3af;">${s.KELAS || ''} | NISN: ${s.NISN}</small>
+          <div style="display:flex; align-items:center;">
+            <div class="rank-badge ${rankBadgeClass}">${rankText}</div>
+            <div>
+              <strong>${s.NAMA}</strong><br>
+              <small style="color:#9ca3af;">${hlmCurrent} Halaman | ${s.CAPAIAN_TERAKHIR_SURAT || '-'}</small>
+            </div>
           </div>
-          <span class="badge ${pct >= 100 ? 'badge-success' : 'badge-warning'}">${pct}%</span>
+          <span style="font-size:0.75rem; color:#a855f7; font-weight:bold;">PILIH ›</span>
         `;
         item.onclick = () => selectStudentForEdit(idx);
         listContainer.appendChild(item);
@@ -561,11 +596,13 @@
       document.getElementById(`student-item-${index}`).classList.add('selected');
 
       const s = studentDataList[index];
+      const rank = index + 1;
       const currentHlm = parseHalaman(s.CAPAIAN_TERAKHIR_HALAMAN);
       const ptsHlm = parseHalaman(s.PTS_HALAMAN);
       const pasHlm = parseHalaman(s.PAS_HALAMAN);
 
       document.getElementById('selectedStudentTitle').innerText = `Progres & Pesan untuk: ${s.NAMA}`;
+      document.getElementById('adminDispRank').innerText = `#${rank} dari ${studentDataList.length} Siswa`;
       document.getElementById('adminDispCapaian').innerText = `${s.CAPAIAN_TERAKHIR_SURAT || '-'} (${currentHlm} Halaman)`;
       document.getElementById('adminDispPTS').innerText = `${s.PTS_SURAT || '-'} (${ptsHlm} Hlm)`;
       document.getElementById('adminDispPAS').innerText = `${s.PAS_SURAT || '-'} (${pasHlm} Hlm)`;
