@@ -298,7 +298,7 @@
   </div>
 
   <script>
-    // GANTI SAMA URL APPS SCRIPT WEB APP ANDA YANG SUDAH DI-DEPLOY RECENTLY
+    // GANTI SESUAI URL APPS SCRIPT WEB APP ANDA YANG SUDAH DI-DEPLOY TERAKHIR
     const API_URL = "https://script.google.com/macros/s/AKfycbwKQptiUggQnPMGfPVMHoqyonvnMers-Km.../exec";
 
     const loginSection = document.getElementById("loginSection");
@@ -323,7 +323,10 @@
           }
 
           // Tetap lakukan fetch ulang ke Apps Script untuk sinkronisasi data terbaru
-          await fetchAndRefreshStudentData(nisn, password);
+          const isSuccess = await fetchAndRefreshStudentData(nisn, password);
+          if (!isSuccess && !cachedSession) {
+            handleLogout();
+          }
 
         } catch (e) {
           console.error("Gagal memulihkan sesi:", e);
@@ -422,7 +425,7 @@
       const pasHal = parseFloat(student.PAS_HALAMAN) || 0;
       document.getElementById("displayPas").innerText = `${pasSurat}: (${pasHal} Halaman)`;
 
-      // Persentase Progres sederhahana (Berdasarkan Target PAS)
+      // Persentase Progres sederhana
       const currentHal = parseFloat(cHalaman) || 0;
       let pctPts = ptsHal > 0 ? Math.min(Math.round((currentHal / ptsHal) * 100), 100) : 0;
       let pctPas = pasHal > 0 ? Math.min(Math.round((currentHal / pasHal) * 100), 100) : 0;
