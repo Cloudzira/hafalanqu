@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tahfizhqu</title>
+  <title>TAHFIZHQU</title>
   <style>
     * {
       margin: 0;
@@ -15,11 +15,46 @@
     body {
       min-height: 100vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
       background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1f2937 100%);
       color: #f3f4f6;
       padding: 20px;
+    }
+
+    /* APP HEADER */
+    .app-header {
+      text-align: center;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+
+    .app-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      background: linear-gradient(90deg, #34d399, #a855f7, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .app-subtitle {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    /* MAIN CONTAINER WRAPPER */
+    .main-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+      padding: 10px 0;
     }
 
     .glass-card {
@@ -300,162 +335,192 @@
       border-radius: 12px;
       margin-bottom: 20px;
     }
+
+    /* FOOTER */
+    .app-footer {
+      text-align: center;
+      padding: 15px 0 5px 0;
+      font-size: 0.8rem;
+      color: #6b7280;
+      letter-spacing: 0.5px;
+    }
+
+    .app-footer strong {
+      color: #9ca3af;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
 
-  <!-- CARD LOGIN -->
-  <div id="loginCard" class="glass-card">
-    <div class="role-tabs">
-      <button class="tab-btn active" id="tabStudent" onclick="switchRole('student')">Siswa</button>
-      <button class="tab-btn" id="tabAdmin" onclick="switchRole('admin')">Guru / Admin</button>
-    </div>
+  <!-- APP HEADER (JUDUL UTAMA ATAS) -->
+  <header class="app-header">
+    <h1 class="app-title">Tahfizhqu</h1>
+    <p class="app-subtitle">Aplikasi Monitoring Hafalan Al-Qur'an Siswa</p>
+  </header>
 
-    <!-- FORM LOGIN SISWA -->
-    <form id="studentLoginForm">
-      <h2 class="title">Login Siswa</h2>
-      <div class="form-group">
-        <label>NIS Siswa</label>
-        <input type="text" id="nisn" placeholder="Masukkan NIS" required>
+  <!-- MAIN CONTAINER CONTAINER -->
+  <div class="main-container">
+
+    <!-- CARD LOGIN -->
+    <div id="loginCard" class="glass-card">
+      <div class="role-tabs">
+        <button class="tab-btn active" id="tabStudent" onclick="switchRole('student')">Siswa</button>
+        <button class="tab-btn" id="tabAdmin" onclick="switchRole('admin')">Guru / Admin</button>
       </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="studentPass" placeholder="Masukkan Password" required>
-      </div>
-      <button type="submit" class="btn">Masuk</button>
-    </form>
 
-    <!-- FORM LOGIN GURU -->
-    <form id="adminLoginForm" style="display: none;">
-      <h2 class="title">Panel Guru</h2>
-      <div class="form-group">
-        <label>PIN Guru / Admin</label>
-        <input type="password" id="adminPin" placeholder="Masukkan PIN Admin" required>
-      </div>
-      <button type="submit" class="btn">Masuk Panel Guru</button>
-    </form>
-
-    <div id="loginError" style="color: #f87171; font-size: 0.85rem; text-align: center; margin-top: 15px;"></div>
-  </div>
-
-  <!-- DASHBOARD SISWA -->
-  <div id="studentDashboard" class="glass-card wide" style="display: none;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <div>
-        <h2 id="dispName">Nama Siswa</h2>
-        <span id="dispMeta" style="font-size: 0.85rem; color: #9ca3af;">NIS: - | Kelas: -</span>
-      </div>
-      <button class="btn-logout" onclick="logout()">Keluar</button>
-    </div>
-
-    <!-- BADGE MEDALI SISWA -->
-    <div id="studentMedalCard" class="student-medal-card">
-      <div id="dispMedalIcon" class="medal-icon-large">🎗️</div>
-      <div class="medal-text">
-        <h4 id="dispMedalTitle">Peringkat Kelas</h4>
-        <p id="dispMedalDesc">Sedang memuat posisi peringkat...</p>
-      </div>
-    </div>
-
-    <!-- BOX NOTIFIKASI DARI GURU -->
-    <div id="notifCard" class="notif-box" style="display: none;">
-      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-        <span style="font-size: 1.1rem;">🔔</span>
-        <span style="font-size: 0.85rem; color: #34d399; font-weight: 700;">PESAN GURU</span>
-      </div>
-      <p id="dispNotifikasi" style="font-size: 0.95rem; color: #f3f4f6; line-height: 1.4;">-</p>
-    </div>
-
-    <!-- CAPAIAN TERAKHIR -->
-    <div style="background: rgba(255,255,255,0.04); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-      <span style="font-size: 0.75rem; color: #9ca3af;">📖 CAPAIAN TERAKHIR</span>
-      <p id="dispCapaian" style="font-size: 1.1rem; font-weight: 600; margin-top: 5px;">-</p>
-    </div>
-
-    <!-- GRID TARGET PTS & PAS -->
-    <div class="target-grid">
-      <!-- TARGET PTS -->
-      <div class="target-box">
-        <span style="font-size: 0.75rem; color: #9ca3af;">🎯 TARGET TENGAH SEMESTER (PTS)</span>
-        <p id="dispTargetPTS" style="font-size: 0.95rem; font-weight: 600; margin-top: 5px;">-</p>
-        <div class="progress-bar-bg">
-          <div id="barPTS" class="progress-bar-fill"></div>
+      <!-- FORM LOGIN SISWA -->
+      <form id="studentLoginForm">
+        <h2 class="title">Login Siswa</h2>
+        <div class="form-group">
+          <label>NIS Siswa</label>
+          <input type="text" id="nisn" placeholder="Masukkan NIS" required>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-          <span id="badgePTS" class="badge badge-warning">Belum Tuntas</span>
-          <span id="percentPTS" style="font-size: 0.75rem; color: #9ca3af;">0%</span>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="studentPass" placeholder="Masukkan Password" required>
+        </div>
+        <button type="submit" class="btn">Masuk</button>
+      </form>
+
+      <!-- FORM LOGIN GURU -->
+      <form id="adminLoginForm" style="display: none;">
+        <h2 class="title">Panel Guru</h2>
+        <div class="form-group">
+          <label>PIN Guru / Admin</label>
+          <input type="password" id="adminPin" placeholder="Masukkan PIN Admin" required>
+        </div>
+        <button type="submit" class="btn">Masuk Panel Guru</button>
+      </form>
+
+      <div id="loginError" style="color: #f87171; font-size: 0.85rem; text-align: center; margin-top: 15px;"></div>
+    </div>
+
+    <!-- DASHBOARD SISWA -->
+    <div id="studentDashboard" class="glass-card wide" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+          <h2 id="dispName">Nama Siswa</h2>
+          <span id="dispMeta" style="font-size: 0.85rem; color: #9ca3af;">NIS: - | Kelas: -</span>
+        </div>
+        <button class="btn-logout" onclick="logout()">Keluar</button>
+      </div>
+
+      <!-- BADGE MEDALI SISWA -->
+      <div id="studentMedalCard" class="student-medal-card">
+        <div id="dispMedalIcon" class="medal-icon-large">🎗️</div>
+        <div class="medal-text">
+          <h4 id="dispMedalTitle">Peringkat Kelas</h4>
+          <p id="dispMedalDesc">Sedang memuat posisi peringkat...</p>
         </div>
       </div>
 
-      <!-- TARGET PAS -->
-      <div class="target-box">
-        <span style="font-size: 0.75rem; color: #9ca3af;">🏁 TARGET AKHIR SEMESTER (PAS)</span>
-        <p id="dispTargetPAS" style="font-size: 0.95rem; font-weight: 600; margin-top: 5px;">-</p>
-        <div class="progress-bar-bg">
-          <div id="barPAS" class="progress-bar-fill"></div>
+      <!-- BOX NOTIFIKASI DARI GURU -->
+      <div id="notifCard" class="notif-box" style="display: none;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+          <span style="font-size: 1.1rem;">🔔</span>
+          <span style="font-size: 0.85rem; color: #34d399; font-weight: 700;">PESAN GURU</span>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-          <span id="badgePAS" class="badge badge-warning">Belum Tuntas</span>
-          <span id="percentPAS" style="font-size: 0.75rem; color: #9ca3af;">0%</span>
+        <p id="dispNotifikasi" style="font-size: 0.95rem; color: #f3f4f6; line-height: 1.4;">-</p>
+      </div>
+
+      <!-- CAPAIAN TERAKHIR -->
+      <div style="background: rgba(255,255,255,0.04); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+        <span style="font-size: 0.75rem; color: #9ca3af;">📖 CAPAIAN TERAKHIR</span>
+        <p id="dispCapaian" style="font-size: 1.1rem; font-weight: 600; margin-top: 5px;">-</p>
+      </div>
+
+      <!-- GRID TARGET PTS & PAS -->
+      <div class="target-grid">
+        <!-- TARGET PTS -->
+        <div class="target-box">
+          <span style="font-size: 0.75rem; color: #9ca3af;">🎯 TARGET TENGAH SEMESTER (PTS)</span>
+          <p id="dispTargetPTS" style="font-size: 0.95rem; font-weight: 600; margin-top: 5px;">-</p>
+          <div class="progress-bar-bg">
+            <div id="barPTS" class="progress-bar-fill"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+            <span id="badgePTS" class="badge badge-warning">Belum Tuntas</span>
+            <span id="percentPTS" style="font-size: 0.75rem; color: #9ca3af;">0%</span>
+          </div>
+        </div>
+
+        <!-- TARGET PAS -->
+        <div class="target-box">
+          <span style="font-size: 0.75rem; color: #9ca3af;">🏁 TARGET AKHIR SEMESTER (PAS)</span>
+          <p id="dispTargetPAS" style="font-size: 0.95rem; font-weight: 600; margin-top: 5px;">-</p>
+          <div class="progress-bar-bg">
+            <div id="barPAS" class="progress-bar-fill"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+            <span id="badgePAS" class="badge badge-warning">Belum Tuntas</span>
+            <span id="percentPAS" style="font-size: 0.75rem; color: #9ca3af;">0%</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- DASHBOARD GURU & LEADERBOARD -->
-  <div id="adminDashboard" class="glass-card wide" style="display: none;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h2>DASHBOARD GURU</h2>
-      <button class="btn-logout" onclick="logout()">Keluar</button>
-    </div>
-
-    <div class="admin-grid">
-      <!-- DAFTAR SISWA (LEADERBOARD) -->
-      <div>
-        <label style="font-size: 0.85rem; color: #9ca3af; display: block; margin-bottom: 8px;">🏆 Peringkat Hafalan Siswa (Terbanyak):</label>
-        <div class="student-list-box" id="studentList"></div>
+    <!-- DASHBOARD GURU & LEADERBOARD -->
+    <div id="adminDashboard" class="glass-card wide" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>DASHBOARD GURU</h2>
+        <button class="btn-logout" onclick="logout()">Keluar</button>
       </div>
 
-      <!-- FORM DENGAN INFO PROGRES SISWA TERPILIH -->
-      <div class="edit-box">
-        <h3 id="selectedStudentTitle" style="font-size: 1rem; margin-bottom: 15px; color: #34d399;">← Pilih siswa</h3>
-        
-        <form id="updateForm" style="display: none;">
-          <input type="hidden" id="editRowIndex">
+      <div class="admin-grid">
+        <!-- DAFTAR SISWA (LEADERBOARD) -->
+        <div>
+          <label style="font-size: 0.85rem; color: #9ca3af; display: block; margin-bottom: 8px;">🏆 Peringkat Hafalan Siswa (Terbanyak):</label>
+          <div class="student-list-box" id="studentList"></div>
+        </div>
+
+        <!-- FORM DENGAN INFO PROGRES SISWA TERPILIH -->
+        <div class="edit-box">
+          <h3 id="selectedStudentTitle" style="font-size: 1rem; margin-bottom: 15px; color: #34d399;">← Pilih siswa</h3>
           
-          <!-- RANGKUMAN PROGRES SISWA -->
-          <div class="student-progress-summary">
-            <div style="font-size: 0.8rem; font-weight: bold; color: #34d399; margin-bottom: 8px;">📊 CAPAIAN & PERINGKAT</div>
-            <div class="progress-metric">
-              <span>Posisi Peringkat:</span>
-              <strong id="adminDispRank">-</strong>
+          <form id="updateForm" style="display: none;">
+            <input type="hidden" id="editRowIndex">
+            
+            <!-- RANGKUMAN PROGRES SISWA -->
+            <div class="student-progress-summary">
+              <div style="font-size: 0.8rem; font-weight: bold; color: #34d399; margin-bottom: 8px;">📊 CAPAIAN & PERINGKAT</div>
+              <div class="progress-metric">
+                <span>Posisi Peringkat:</span>
+                <strong id="adminDispRank">-</strong>
+              </div>
+              <div class="progress-metric">
+                <span>Capaian Saat Ini:</span>
+                <strong id="adminDispCapaian">-</strong>
+              </div>
+              <div class="progress-metric">
+                <span>Target PTS:</span>
+                <strong id="adminDispPTS">-</strong>
+              </div>
+              <div class="progress-metric">
+                <span>Target PAS:</span>
+                <strong id="adminDispPAS">-</strong>
+              </div>
             </div>
-            <div class="progress-metric">
-              <span>Capaian Saat Ini:</span>
-              <strong id="adminDispCapaian">-</strong>
-            </div>
-            <div class="progress-metric">
-              <span>Target PTS:</span>
-              <strong id="adminDispPTS">-</strong>
-            </div>
-            <div class="progress-metric">
-              <span>Target PAS:</span>
-              <strong id="adminDispPAS">-</strong>
-            </div>
-          </div>
 
-          <!-- INPUT PESAN / EVALUASI -->
-          <div class="form-group">
-            <label>Pesan / Catatan untuk Siswa</label>
-            <textarea id="editNotifikasi" rows="5" placeholder="Tulis ucapan selamat, catatan evaluasi, atau motivasi di sini..." required></textarea>
-          </div>
+            <!-- INPUT PESAN / EVALUASI -->
+            <div class="form-group">
+              <label>Pesan / Catatan untuk Siswa</label>
+              <textarea id="editNotifikasi" rows="5" placeholder="Tulis ucapan selamat, catatan evaluasi, atau motivasi di sini..." required></textarea>
+            </div>
 
-          <button type="submit" class="btn" id="saveBtn">Kirim Pesan</button>
-          <div id="updateStatus" style="font-size: 0.85rem; text-align: center; margin-top: 10px;"></div>
-        </form>
+            <button type="submit" class="btn" id="saveBtn">Kirim Pesan</button>
+            <div id="updateStatus" style="font-size: 0.85rem; text-align: center; margin-top: 10px;"></div>
+          </form>
+        </div>
       </div>
     </div>
+
   </div>
+
+  <!-- APP FOOTER (DIBAWAH HALAMAN) -->
+  <footer class="app-footer">
+    Kurniapedia | 2026
+  </footer>
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbztdTSvZBRrq9LmunK8IpJ7MD-lziclzOzZlOjo_oZCWhnxe92r0gWthAAzlz4vMMhP/exec"; 
