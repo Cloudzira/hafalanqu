@@ -143,6 +143,11 @@
       font-size: 0.95rem;
     }
 
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
     .btn-logout {
       background: rgba(239, 68, 68, 0.2);
       border: 1px solid rgba(239, 68, 68, 0.4);
@@ -431,7 +436,7 @@
         <p id="dispCapaian" style="font-size: 1.1rem; font-weight: 600; margin-top: 5px;">-</p>
       </div>
 
-      <!-- TARGET PEKAN INI (TAMBAHAN BARU DI KOLOM N) -->
+      <!-- TARGET PEKAN INI (KOLOM N) -->
       <div style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.2); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
         <span style="font-size: 0.75rem; color: #c084fc; font-weight: 600;">📌 TARGET PEKAN INI</span>
         <p id="dispTargetPekanIni" style="font-size: 1.1rem; font-weight: 600; margin-top: 5px; color: #f3f4f6;">-</p>
@@ -538,6 +543,7 @@
 
     let currentAdminPin = "";
     let studentDataList = [];
+    let selectedStudentIndex = null;
 
     // JALANKAN CEK LOGIN OTOMATIS SAAT HALAMAN DIMUAT (REFRESH)
     window.addEventListener('DOMContentLoaded', () => {
@@ -674,8 +680,8 @@
       // Notifikasi Guru
       const notifCard = document.getElementById('notifCard');
       const pesanNotif = data.NOTIFIKASI || data.PESAN_GURU || data.MOTIVASI_GURU;
-      if (pesanNotif && pesanNotif.trim() !== "") {
-        document.getElementById('dispNotifikasi').innerText = pesanNotif.trim();
+      if (pesanNotif && String(pesanNotif).trim() !== "") {
+        document.getElementById('dispNotifikasi').innerText = String(pesanNotif).trim();
         notifCard.style.display = 'block';
       } else {
         notifCard.style.display = 'none';
@@ -686,7 +692,7 @@
       const capaianHlm = parseHalaman(data.CAPAIAN_TERAKHIR_HALAMAN);
       document.getElementById('dispCapaian').innerText = `${capaianSurat} (${capaianHlm} Halaman)`;
 
-      // TARGET PEKAN INI (Membaca Kolom N dari Spreadsheet)
+      // TARGET PEKAN INI
       const targetPekanIni = data.TARGET_PEKAN_INI || data.TARGET_PEKANAN || data.TARGET_PEKAN || '-';
       document.getElementById('dispTargetPekanIni').innerText = targetPekanIni;
 
@@ -805,6 +811,9 @@
         const item = document.createElement('div');
         item.className = "student-item";
         item.id = `student-item-${idx}`;
+        if (selectedStudentIndex === idx) {
+          item.classList.add('selected');
+        }
 
         const rank = idx + 1;
         const hlmCurrent = parseHalaman(s.CAPAIAN_TERAKHIR_HALAMAN);
@@ -833,8 +842,10 @@
     }
 
     function selectStudentForEdit(index) {
+      selectedStudentIndex = index;
       document.querySelectorAll('.student-item').forEach(el => el.classList.remove('selected'));
-      document.getElementById(`student-item-${index}`).classList.add('selected');
+      const activeItem = document.getElementById(`student-item-${index}`);
+      if (activeItem) activeItem.classList.add('selected');
 
       const s = studentDataList[index];
       const rank = index + 1;
@@ -853,6 +864,7 @@
       document.getElementById('editRowIndex').value = s.ROW_INDEX;
       document.getElementById('editNotifikasi').value = s.NOTIFIKASI || s.PESAN_GURU || s.MOTIVASI_GURU || "";
       document.getElementById('updateForm').style.display = 'block';
+      document.getElementById('updateStatus').innerText = "";
     }
 
     // SIMPAN / KIRIM NOTIFIKASI
@@ -865,11 +877,12 @@
       saveBtn.innerText = "Mengirim...";
       updateStatus.innerText = "";
 
+      const newNotif = document.getElementById('editNotifikasi').value;
       const payload = {
         action: "update_notif",
         pin: currentAdminPin,
         rowIndex: document.getElementById('editRowIndex').value,
-        notifikasi: document.getElementById('editNotifikasi').value
+        notifikasi: newNotif
       };
 
       try {
@@ -882,6 +895,12 @@
         if (result.status === 'success') {
           updateStatus.style.color = "#34d399";
           updateStatus.innerText = "Pesan berhasil dikirim!";
+          
+          // Perbarui data di array memori lokal
+          if (selectedStudentIndex !== null && studentDataList[selectedStudentIndex]) {
+            studentDataList[selectedStudentIndex].NOTIFIKASI = newNotif;
+            studentDataList[selectedStudentIndex].PESAN_GURU = newNotif;
+          }
         } else {
           updateStatus.style.color = "#f87171";
           updateStatus.innerText = result.message || "Gagal menyimpan pesan.";
