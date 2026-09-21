@@ -192,6 +192,13 @@
       transition: width 0.5s ease;
     }
 
+    .progress-bar-fill-pekanan {
+      height: 100%;
+      background: linear-gradient(90deg, #c084fc, #ec4899);
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
     .badge {
       display: inline-block;
       padding: 3px 8px;
@@ -436,10 +443,19 @@
         <p id="dispCapaian" style="font-size: 1.1rem; font-weight: 600; margin-top: 5px;">-</p>
       </div>
 
-      <!-- TARGET PEKAN INI (KOLOM N) -->
+      <!-- TARGET PEKAN INI (DENGAN BAR INDIKATOR KETUNTASAN) -->
       <div style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.2); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
         <span style="font-size: 0.75rem; color: #c084fc; font-weight: 600;">📌 TARGET PEKAN INI</span>
         <p id="dispTargetPekanIni" style="font-size: 1.1rem; font-weight: 600; margin-top: 5px; color: #f3f4f6;">-</p>
+        
+        <!-- BAR INDIKATOR PEKANAN -->
+        <div class="progress-bar-bg" style="margin-top: 12px;">
+          <div id="barPekanan" class="progress-bar-fill-pekanan"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+          <span id="badgePekanan" class="badge badge-warning">Belum Tuntas</span>
+          <span id="percentPekanan" style="font-size: 0.75rem; color: #9ca3af;">0%</span>
+        </div>
       </div>
 
       <!-- GRID TARGET PTS & PAS -->
@@ -639,7 +655,9 @@
 
     function parseHalaman(val) {
       if (!val) return 0;
-      return parseFloat(String(val).replace(',', '.')) || 0;
+      // Ambil angka dari string (misal: "14 Halaman" -> 14)
+      const matches = String(val).replace(',', '.').match(/[\d.]+/);
+      return matches ? parseFloat(matches[0]) : 0;
     }
 
     function updateProgress(badgeId, barId, percentId, currentVal, targetVal) {
@@ -692,9 +710,18 @@
       const capaianHlm = parseHalaman(data.CAPAIAN_TERAKHIR_HALAMAN);
       document.getElementById('dispCapaian').innerText = `${capaianSurat} (${capaianHlm} Halaman)`;
 
-      // TARGET PEKAN INI
-      const targetPekanIni = data.TARGET_PEKAN_INI || data.TARGET_PEKANAN || data.TARGET_PEKAN || '-';
-      document.getElementById('dispTargetPekanIni').innerText = targetPekanIni;
+      // TARGET PEKAN INI & BAR INDIKATOR PEKANAN
+      const targetPekanIniRaw = data.TARGET_PEKAN_INI || data.TARGET_PEKANAN || data.TARGET_PEKAN || '-';
+      const targetPekanHlm = parseHalaman(targetPekanIniRaw);
+      
+      if (typeof targetPekanIniRaw === 'number' || !isNaN(targetPekanIniRaw)) {
+        document.getElementById('dispTargetPekanIni').innerText = `${targetPekanIniRaw} Halaman`;
+      } else {
+        document.getElementById('dispTargetPekanIni').innerText = targetPekanIniRaw;
+      }
+
+      // Hitung & Perbarui Progress Bar Pekanan
+      updateProgress('badgePekanan', 'barPekanan', 'percentPekanan', capaianHlm, targetPekanHlm);
 
       // Target PTS
       const targetPtsSurah = data.PTS_SURAT || "-";
