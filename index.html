@@ -426,9 +426,15 @@
       </div>
 
       <!-- CAPAIAN TERAKHIR -->
-      <div style="background: rgba(255,255,255,0.04); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+      <div style="background: rgba(255,255,255,0.04); padding: 15px; border-radius: 12px; margin-bottom: 12px;">
         <span style="font-size: 0.75rem; color: #9ca3af;">📖 CAPAIAN TERAKHIR</span>
         <p id="dispCapaian" style="font-size: 1.1rem; font-weight: 600; margin-top: 5px;">-</p>
+      </div>
+
+      <!-- TARGET PEKAN INI (TAMBAHAN BARU DI KOLOM N) -->
+      <div style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.2); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+        <span style="font-size: 0.75rem; color: #c084fc; font-weight: 600;">📌 TARGET PEKAN INI</span>
+        <p id="dispTargetPekanIni" style="font-size: 1.1rem; font-weight: 600; margin-top: 5px; color: #f3f4f6;">-</p>
       </div>
 
       <!-- GRID TARGET PTS & PAS -->
@@ -494,6 +500,10 @@
                 <strong id="adminDispCapaian">-</strong>
               </div>
               <div class="progress-metric">
+                <span>Target Pekan Ini:</span>
+                <strong id="adminDispTargetPekanIni" style="color:#c084fc;">-</strong>
+              </div>
+              <div class="progress-metric">
                 <span>Target PTS:</span>
                 <strong id="adminDispPTS">-</strong>
               </div>
@@ -533,6 +543,11 @@
     window.addEventListener('DOMContentLoaded', () => {
       checkAutoLogin();
     });
+
+    function logout() {
+      localStorage.removeItem('user_session');
+      location.reload();
+    }
 
     function checkAutoLogin() {
       const savedUser = localStorage.getItem('user_session');
@@ -670,6 +685,10 @@
       const capaianSurat = data.CAPAIAN_TERAKHIR_SURAT || '-';
       const capaianHlm = parseHalaman(data.CAPAIAN_TERAKHIR_HALAMAN);
       document.getElementById('dispCapaian').innerText = `${capaianSurat} (${capaianHlm} Halaman)`;
+
+      // TARGET PEKAN INI (Membaca Kolom N dari Spreadsheet)
+      const targetPekanIni = data.TARGET_PEKAN_INI || data.TARGET_PEKANAN || data.TARGET_PEKAN || '-';
+      document.getElementById('dispTargetPekanIni').innerText = targetPekanIni;
 
       // Target PTS
       const targetPtsSurah = data.PTS_SURAT || "-";
@@ -822,10 +841,12 @@
       const currentHlm = parseHalaman(s.CAPAIAN_TERAKHIR_HALAMAN);
       const ptsHlm = parseHalaman(s.PTS_HALAMAN);
       const pasHlm = parseHalaman(s.PAS_HALAMAN);
+      const targetPekan = s.TARGET_PEKAN_INI || s.TARGET_PEKANAN || s.TARGET_PEKAN || '-';
 
       document.getElementById('selectedStudentTitle').innerText = `Progres & Pesan untuk: ${s.NAMA}`;
       document.getElementById('adminDispRank').innerText = `#${rank} dari ${studentDataList.length} Siswa`;
       document.getElementById('adminDispCapaian').innerText = `${s.CAPAIAN_TERAKHIR_SURAT || '-'} (${currentHlm} Hlm)`;
+      document.getElementById('adminDispTargetPekanIni').innerText = targetPekan;
       document.getElementById('adminDispPTS').innerText = `${s.PTS_SURAT || '-'} (${ptsHlm} Hlm)`;
       document.getElementById('adminDispPAS').innerText = `${s.PAS_SURAT || '-'} (${pasHlm} Hlm)`;
 
@@ -858,34 +879,21 @@
           body: JSON.stringify(payload)
         });
         const result = await res.json();
-
         if (result.status === 'success') {
-          updateStatus.style.color = "#4ade80";
-          updateStatus.innerText = "✓ Notifikasi berhasil dikirim!";
-          
-          const rIndex = document.getElementById('editRowIndex').value;
-          const studentObj = studentDataList.find(s => s.ROW_INDEX == rIndex);
-          if (studentObj) {
-            studentObj.NOTIFIKASI = payload.notifikasi;
-          }
+          updateStatus.style.color = "#34d399";
+          updateStatus.innerText = "Pesan berhasil dikirim!";
         } else {
           updateStatus.style.color = "#f87171";
-          updateStatus.innerText = result.message || "Gagal mengirim notifikasi.";
+          updateStatus.innerText = result.message || "Gagal menyimpan pesan.";
         }
       } catch (err) {
         updateStatus.style.color = "#f87171";
-        updateStatus.innerText = "Gagal menyimpan data. Pastikan koneksi aman.";
+        updateStatus.innerText = "Terjadi kesalahan koneksi.";
       } finally {
         saveBtn.disabled = false;
         saveBtn.innerText = "Kirim Pesan";
       }
     });
-
-    // LOGOUT & HAPUS SESI
-    function logout() {
-      localStorage.removeItem('user_session'); // Hapus sesi yang tersimpan
-      location.reload();
-    }
   </script>
 </body>
 </html>
